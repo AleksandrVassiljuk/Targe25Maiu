@@ -60,21 +60,22 @@ public partial class TextPage : ContentPage
 
     private void Liikumine(object? sender, EventArgs e)
     {
-        Button nupp = sender as Button;
-        if (nupp.ZIndex == 0)
+        Button? nupp = sender as Button;
+        switch (nupp.ZIndex)
         {
-            Navigation.PopAsync();
-        }
-        else if (nupp.ZIndex == 1)
-        {
-            Navigation.PopToRootAsync();
-        }
-        else if (nupp.ZIndex == 2)
-        {
-            Navigation.PushAsync(new FigurePage());
+            case 0:
+                Navigation.PopAsync();
+                break;
+            case 1:
+                Navigation.PopToRootAsync();
+                break;
+            case 2:
+                Navigation.PushAsync(new FigurePage());
+                break;
         }
     }
 
+    [Obsolete]
     private async void Btn_Clicked(object? sender, EventArgs e)
     {
         IEnumerable<Locale> locales = await TextToSpeech.Default.GetLocalesAsync();
@@ -101,3 +102,4 @@ public partial class TextPage : ContentPage
         }
     }
 }
+
