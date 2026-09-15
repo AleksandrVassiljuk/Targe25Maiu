@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="Targe25Maiu.TreePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Puu"
+    BackgroundColor="LightSkyBlue">
+
+    <Grid>
+
+        <ScrollView>
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="12">
+
+                <Label
+                    Text="🌳 Puu hooajad ja elutsükkel"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center" />
+
+                <!-- ÜKS TERVIKLIK PUU -->
+                <AbsoluteLayout
+                    x:Name="Tree"
+                    HeightRequest="320">
+
+                    <!-- TÜVI -->
+                    <BoxView
+                        Color="#654321"
+                        WidthRequest="24"
+                        HeightRequest="140"
+                        CornerRadius="10"
+                        AbsoluteLayout.LayoutBounds="0.5,0.73,24,140"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <!-- ÜKS SUUR ÜMAR VÕRA -->
+                    <Frame
+                        x:Name="Foliage"
+                        BackgroundColor="#2E8B3C"
+                        WidthRequest="185"
+                        HeightRequest="185"
+                        CornerRadius="92"
+                        Padding="0"
+                        HasShadow="True"
+                        AbsoluteLayout.LayoutBounds="0.5,0.30,185,185"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <!-- ÕIED -->
+                    <Label
+                        x:Name="Flowers"
+                        Text="🌸  🌼  🌷&#10;🌺  🪻  🌻&#10;🌸  🌼  🌷"
+                        FontSize="20"
+                        IsVisible="False"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center"
+                        AbsoluteLayout.LayoutBounds="0.5,0.30,170,110"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                </AbsoluteLayout>
+
+                <Picker
+                    x:Name="ActionPicker"
+                    Title="Vali tegevus">
+
+                    <Picker.Items>
+                        <x:String>Kasva</x:String>
+                        <x:String>Õitse</x:String>
+                        <x:String>Värise</x:String>
+                        <x:String>Langeta</x:String>
+                    </Picker.Items>
+
+                </Picker>
+
+                <Button
+                    Text="Käivita"
+                    FontSize="18"
+                    Clicked="Käivita_Clicked" />
+
+                <Button
+                    Text="RESTART"
+                    FontSize="18"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Clicked="Restart_Clicked" />
+
+                <Label
+                    x:Name="InfoLabel"
+                    Text="Vali tegevus"
+                    FontSize="17"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center" />
+
+                <Label
+                    Text="Lehestiku läbipaistvus"
+                    FontSize="16" />
+
+                <Slider
+                    x:Name="OpacitySlider"
+                    Minimum="0"
+                    Maximum="1"
+                    Value="1"
+                    ValueChanged="Opacity_Changed" />
+
+                <Label
+                    Text="Animatsiooni kiirus: 500–2000 ms"
+                    FontSize="16" />
+
+                <Stepper
+                    x:Name="SpeedStepper"
+                    Minimum="500"
+                    Maximum="2000"
+                    Increment="100"
+                    Value="1000" />
+
+                <Label
+                    Text="Vali kuupäev"
+                    FontSize="16" />
+
+                <DatePicker
+                    x:Name="DatePickerControl" />
+
+                <Label
+                    Text="Vali kellaaeg"
+                    FontSize="16" />
+
+                <TimePicker
+                    x:Name="TimePickerControl" />
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+        <!-- MUST EKRAAN -->
+        <BoxView
+            x:Name="BlackScreen"
+            Color="Black"
+            IsVisible="False" />
+
+    </Grid>
+
+</ContentPage>

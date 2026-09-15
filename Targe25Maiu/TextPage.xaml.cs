@@ -5,8 +5,14 @@ public partial class TextPage : ContentPage
     Label lbl;
     Editor editor;
     HorizontalStackLayout hsl;
-    List<string> nupud = new List<string>() { "Tagasi", "Avaleht", "Edasi" };
     VerticalStackLayout vsl;
+
+    List<string> nupud = new List<string>()
+    {
+        "Tagasi",
+        "Avaleht",
+        "Edasi"
+    };
 
     public TextPage()
     {
@@ -19,19 +25,27 @@ public partial class TextPage : ContentPage
             HorizontalOptions = LayoutOptions.Center,
             FontAttributes = FontAttributes.Bold
         };
+
         editor = new Editor
         {
             Placeholder = "Sisesta tekst...",
             PlaceholderColor = Colors.Red,
             FontSize = 18,
             FontAttributes = FontAttributes.Italic,
-            HorizontalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Center
         };
+
         editor.TextChanged += (sender, e) =>
         {
             lbl.Text = editor.Text;
         };
-        hsl = new HorizontalStackLayout { Spacing = 20, HorizontalOptions = LayoutOptions.Center };
+
+        hsl = new HorizontalStackLayout
+        {
+            Spacing = 20,
+            HorizontalOptions = LayoutOptions.Center
+        };
+
         for (int j = 0; j < nupud.Count; j++)
         {
             Button nupp = new Button
@@ -45,61 +59,45 @@ public partial class TextPage : ContentPage
                 HeightRequest = 50,
                 ZIndex = j
             };
+
             hsl.Add(nupp);
             nupp.Clicked += Liikumine;
         }
+
         vsl = new VerticalStackLayout
         {
             Padding = 20,
             Spacing = 15,
-            Children = { lbl, editor, hsl },
+            Children =
+            {
+                lbl,
+                editor,
+                hsl
+            },
             HorizontalOptions = LayoutOptions.Center
         };
+
         Content = vsl;
     }
 
     private void Liikumine(object? sender, EventArgs e)
     {
-        Button? nupp = sender as Button;
+        if (sender is not Button nupp)
+            return;
+
         switch (nupp.ZIndex)
         {
             case 0:
                 Navigation.PopAsync();
                 break;
+
             case 1:
                 Navigation.PopToRootAsync();
                 break;
+
             case 2:
                 Navigation.PushAsync(new FigurePage());
                 break;
         }
     }
-
-    [Obsolete]
-    private async void Btn_Clicked(object? sender, EventArgs e)
-    {
-        IEnumerable<Locale> locales = await TextToSpeech.Default.GetLocalesAsync();
-
-        SpeechOptions options = new SpeechOptions()
-        {
-            Pitch = 1.5f,   // 0.0 - 2.0
-            Volume = 0.75f, // 0.0 - 1.0
-            Locale = locales.FirstOrDefault()
-        };
-        var text = editor.Text;
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            await DisplayAlert("Viga", "Palun sisesta tekst", "OK");
-            return;
-        }
-        try
-        {
-            await TextToSpeech.SpeakAsync(text, options);
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("TTS viga", ex.Message, "OK");
-        }
-    }
 }
-

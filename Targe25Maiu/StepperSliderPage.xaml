@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Targe25Maiu.StepperSliderPage"
+             Title="StepperSliderPage">
+
+    <AbsoluteLayout>
+
+        <!-- Silt (Label) -->
+        <Label x:Name="label"
+               Text="Steppert/Slidert vahetati: 50"
+               BackgroundColor="LightGray"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Center"
+               FontSize="24"
+               AbsoluteLayout.LayoutBounds="0.5, 0.2, 300, 60"
+               AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+        <!-- Stepper (Sammulugeja) -->
+        <Stepper x:Name="stepper"
+                 Minimum="0"
+                 Maximum="360"
+                 Increment="5"
+                 Value="50"
+                 HorizontalOptions="Center"
+                 ValueChanged="Stepper_Slider_ValueChanged"
+                 AbsoluteLayout.LayoutBounds="0.5, 0.45, 300, 60"
+                 AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+        <!-- Slider (Liugur) -->
+        <Slider x:Name="slider"
+                Minimum="0"
+                Maximum="360"
+                Value="50"
+                HorizontalOptions="Center"
+                MinimumTrackColor="LightGray"
+                MaximumTrackColor="DarkGray"
+                ThumbColor="Gray"
+                WidthRequest="300"
+                ValueChanged="Stepper_Slider_ValueChanged"
+                AbsoluteLayout.LayoutBounds="0.5, 0.7, 300, 60"
+                AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+    </AbsoluteLayout>
+</ContentPage>
