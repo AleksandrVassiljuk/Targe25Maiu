@@ -5,60 +5,407 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Puu"
-    BackgroundColor="LightSkyBlue">
+    BackgroundColor="#F4FBFF">
 
     <Grid>
 
         <ScrollView>
-
             <VerticalStackLayout
                 Padding="20"
-                Spacing="12">
+                Spacing="15">
 
+                <!-- PEALKIRI -->
                 <Label
                     Text="🌳 Puu hooajad ja elutsükkel"
-                    FontSize="24"
+                    FontSize="26"
                     FontAttributes="Bold"
+                    TextColor="#234F2E"
                     HorizontalOptions="Center" />
 
-                <!-- ÜKS TERVIKLIK PUU -->
-                <AbsoluteLayout
-                    x:Name="Tree"
-                    HeightRequest="320">
+                <!-- LOODUS -->
+                <Border
+                    HeightRequest="430"
+                    BackgroundColor="#DDF5FF"
+                    Stroke="#A7DDEC"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 22">
 
-                    <!-- TÜVI -->
-                    <BoxView
-                        Color="#654321"
-                        WidthRequest="24"
-                        HeightRequest="140"
-                        CornerRadius="10"
-                        AbsoluteLayout.LayoutBounds="0.5,0.73,24,140"
-                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+                    <AbsoluteLayout>
 
-                    <!-- ÜKS SUUR ÜMAR VÕRA -->
-                    <Frame
-                        x:Name="Foliage"
-                        BackgroundColor="#2E8B3C"
-                        WidthRequest="185"
-                        HeightRequest="185"
-                        CornerRadius="92"
-                        Padding="0"
-                        HasShadow="True"
-                        AbsoluteLayout.LayoutBounds="0.5,0.30,185,185"
-                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+                        <!-- ========================= -->
+                        <!-- PÄIKE -->
+                        <!-- ========================= -->
 
-                    <!-- ÕIED -->
-                    <Label
-                        x:Name="Flowers"
-                        Text="🌸  🌼  🌷&#10;🌺  🪻  🌻&#10;🌸  🌼  🌷"
-                        FontSize="20"
-                        IsVisible="False"
-                        HorizontalTextAlignment="Center"
-                        VerticalTextAlignment="Center"
-                        AbsoluteLayout.LayoutBounds="0.5,0.30,170,110"
-                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+                        <AbsoluteLayout
+                            WidthRequest="150"
+                            HeightRequest="150"
+                            AbsoluteLayout.LayoutBounds="0.88,0.17,150,150"
+                            AbsoluteLayout.LayoutFlags="PositionProportional">
 
-                </AbsoluteLayout>
+                            <!-- KIIR -->
+                            <BoxView
+                                Color="#FFD34E"
+                                WidthRequest="6"
+                                HeightRequest="30"
+                                CornerRadius="3"
+                                AbsoluteLayout.LayoutBounds="72,0,6,30" />
+
+                            <BoxView
+                                Color="#FFD34E"
+                                WidthRequest="6"
+                                HeightRequest="30"
+                                CornerRadius="3"
+                                Rotation="45"
+                                AbsoluteLayout.LayoutBounds="118,18,6,30" />
+
+                            <BoxView
+                                Color="#FFD34E"
+                                WidthRequest="6"
+                                HeightRequest="30"
+                                CornerRadius="3"
+                                Rotation="90"
+                                AbsoluteLayout.LayoutBounds="138,60,6,30" />
+
+                            <BoxView
+                                Color="#FFD34E"
+                                WidthRequest="6"
+                                HeightRequest="30"
+                                CornerRadius="3"
+                                Rotation="135"
+                                AbsoluteLayout.LayoutBounds="118,105,6,30" />
+
+                            <BoxView
+                                Color="#FFD34E"
+                                WidthRequest="6"
+                                HeightRequest="30"
+                                CornerRadius="3"
+                                AbsoluteLayout.LayoutBounds="72,120,6,30" />
+
+                            <BoxView
+                                Color="#FFD34E"
+                                WidthRequest="6"
+                                HeightRequest="30"
+                                CornerRadius="3"
+                                Rotation="45"
+                                AbsoluteLayout.LayoutBounds="25,105,6,30" />
+
+                            <BoxView
+                                Color="#FFD34E"
+                                WidthRequest="6"
+                                HeightRequest="30"
+                                CornerRadius="3"
+                                Rotation="90"
+                                AbsoluteLayout.LayoutBounds="5,60,6,30" />
+
+                            <BoxView
+                                Color="#FFD34E"
+                                WidthRequest="6"
+                                HeightRequest="30"
+                                CornerRadius="3"
+                                Rotation="135"
+                                AbsoluteLayout.LayoutBounds="25,18,6,30" />
+
+                            <!-- PÄIKESE RING -->
+                            <Ellipse
+                                Fill="#FFD34E"
+                                WidthRequest="85"
+                                HeightRequest="85"
+                                AbsoluteLayout.LayoutBounds="33,33,85,85" />
+
+                            <Ellipse
+                                Fill="#FFE477"
+                                WidthRequest="62"
+                                HeightRequest="62"
+                                AbsoluteLayout.LayoutBounds="44,44,62,62" />
+
+                        </AbsoluteLayout>
+
+
+                        <!-- ========================= -->
+                        <!-- PILV VASAKUL -->
+                        <!-- ========================= -->
+
+                        <AbsoluteLayout
+                            WidthRequest="180"
+                            HeightRequest="90"
+                            AbsoluteLayout.LayoutBounds="0.15,0.15,180,90"
+                            AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                            <Ellipse
+                                Fill="White"
+                                WidthRequest="130"
+                                HeightRequest="45"
+                                AbsoluteLayout.LayoutBounds="25,35,130,45" />
+
+                            <Ellipse
+                                Fill="White"
+                                WidthRequest="65"
+                                HeightRequest="65"
+                                AbsoluteLayout.LayoutBounds="25,18,65,65" />
+
+                            <Ellipse
+                                Fill="White"
+                                WidthRequest="80"
+                                HeightRequest="80"
+                                AbsoluteLayout.LayoutBounds="65,5,80,80" />
+
+                            <Ellipse
+                                Fill="White"
+                                WidthRequest="60"
+                                HeightRequest="60"
+                                AbsoluteLayout.LayoutBounds="120,22,60,60" />
+
+                        </AbsoluteLayout>
+
+
+                        <!-- ========================= -->
+                        <!-- PILV PAREMAL -->
+                        <!-- ========================= -->
+
+                        <AbsoluteLayout
+                            WidthRequest="145"
+                            HeightRequest="75"
+                            AbsoluteLayout.LayoutBounds="0.67,0.12,145,75"
+                            AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                            <Ellipse
+                                Fill="White"
+                                WidthRequest="110"
+                                HeightRequest="40"
+                                AbsoluteLayout.LayoutBounds="15,28,110,40" />
+
+                            <Ellipse
+                                Fill="White"
+                                WidthRequest="55"
+                                HeightRequest="55"
+                                AbsoluteLayout.LayoutBounds="25,12,55,55" />
+
+                            <Ellipse
+                                Fill="White"
+                                WidthRequest="68"
+                                HeightRequest="68"
+                                AbsoluteLayout.LayoutBounds="58,2,68,68" />
+
+                        </AbsoluteLayout>
+
+
+                        <!-- ========================= -->
+                        <!-- MURU -->
+                        <!-- ========================= -->
+
+                        <BoxView
+                            Color="#78C96B"
+                            AbsoluteLayout.LayoutBounds="0,1,1,105"
+                            AbsoluteLayout.LayoutFlags="WidthProportional,PositionProportional" />
+
+                        <BoxView
+                            Color="#8BD57C"
+                            AbsoluteLayout.LayoutBounds="0,0.78,1,7"
+                            AbsoluteLayout.LayoutFlags="WidthProportional,PositionProportional" />
+
+
+                        <!-- ========================= -->
+                        <!-- PUU -->
+                        <!-- ========================= -->
+
+                        <AbsoluteLayout
+                            x:Name="Tree"
+                            WidthRequest="400"
+                            HeightRequest="340"
+                            AbsoluteLayout.LayoutBounds="0.5,0.56,400,340"
+                            AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                            <!-- VARI -->
+                            <Ellipse
+                                Fill="#55994D"
+                                Opacity="0.40"
+                                WidthRequest="190"
+                                HeightRequest="24"
+                                AbsoluteLayout.LayoutBounds="105,305,190,24" />
+
+
+                            <!-- TÜVI -->
+                            <BoxView
+                                Color="#69452A"
+                                WidthRequest="52"
+                                HeightRequest="180"
+                                CornerRadius="14"
+                                AbsoluteLayout.LayoutBounds="174,150,52,180" />
+
+                            <!-- TÜVE HELEDAM OSA -->
+                            <BoxView
+                                Color="#875A35"
+                                WidthRequest="13"
+                                HeightRequest="160"
+                                CornerRadius="6"
+                                AbsoluteLayout.LayoutBounds="181,160,13,160" />
+
+
+                            <!-- VASAK OKS -->
+                            <BoxView
+                                Color="#69452A"
+                                WidthRequest="115"
+                                HeightRequest="20"
+                                CornerRadius="10"
+                                Rotation="-35"
+                                AbsoluteLayout.LayoutBounds="105,165,115,20" />
+
+                            <BoxView
+                                Color="#69452A"
+                                WidthRequest="75"
+                                HeightRequest="15"
+                                CornerRadius="8"
+                                Rotation="-58"
+                                AbsoluteLayout.LayoutBounds="125,125,75,15" />
+
+
+                            <!-- PAREM OKS -->
+                            <BoxView
+                                Color="#69452A"
+                                WidthRequest="115"
+                                HeightRequest="20"
+                                CornerRadius="10"
+                                Rotation="35"
+                                AbsoluteLayout.LayoutBounds="180,165,115,20" />
+
+                            <BoxView
+                                Color="#69452A"
+                                WidthRequest="75"
+                                HeightRequest="15"
+                                CornerRadius="8"
+                                Rotation="58"
+                                AbsoluteLayout.LayoutBounds="200,125,75,15" />
+
+
+                            <!-- ========================= -->
+                            <!-- LEHESTIK -->
+                            <!-- ========================= -->
+
+                            <AbsoluteLayout
+                                x:Name="Foliage"
+                                AbsoluteLayout.LayoutBounds="25,5,350,230">
+
+                                <Ellipse
+                                    Fill="#2F7D32"
+                                    WidthRequest="145"
+                                    HeightRequest="120"
+                                    AbsoluteLayout.LayoutBounds="15,85,145,120" />
+
+                                <Ellipse
+                                    Fill="#2F7D32"
+                                    WidthRequest="145"
+                                    HeightRequest="120"
+                                    AbsoluteLayout.LayoutBounds="190,85,145,120" />
+
+                                <Ellipse
+                                    Fill="#3D9A42"
+                                    WidthRequest="135"
+                                    HeightRequest="125"
+                                    AbsoluteLayout.LayoutBounds="45,35,135,125" />
+
+                                <Ellipse
+                                    Fill="#3D9A42"
+                                    WidthRequest="135"
+                                    HeightRequest="125"
+                                    AbsoluteLayout.LayoutBounds="170,35,135,125" />
+
+                                <Ellipse
+                                    Fill="#48AA4D"
+                                    WidthRequest="150"
+                                    HeightRequest="135"
+                                    AbsoluteLayout.LayoutBounds="100,5,150,135" />
+
+                                <Ellipse
+                                    Fill="#368B3B"
+                                    WidthRequest="105"
+                                    HeightRequest="100"
+                                    AbsoluteLayout.LayoutBounds="0,110,105,100" />
+
+                                <Ellipse
+                                    Fill="#368B3B"
+                                    WidthRequest="105"
+                                    HeightRequest="100"
+                                    AbsoluteLayout.LayoutBounds="245,110,105,100" />
+
+                                <Ellipse
+                                    Fill="#43A047"
+                                    WidthRequest="165"
+                                    HeightRequest="135"
+                                    AbsoluteLayout.LayoutBounds="92,80,165,135" />
+
+                                <Ellipse
+                                    Fill="#4CAF50"
+                                    WidthRequest="115"
+                                    HeightRequest="100"
+                                    AbsoluteLayout.LayoutBounds="55,125,115,100" />
+
+                                <Ellipse
+                                    Fill="#4CAF50"
+                                    WidthRequest="115"
+                                    HeightRequest="100"
+                                    AbsoluteLayout.LayoutBounds="180,125,115,100" />
+
+                                <Ellipse
+                                    Fill="#58B957"
+                                    WidthRequest="75"
+                                    HeightRequest="65"
+                                    AbsoluteLayout.LayoutBounds="135,145,75,65" />
+
+                            </AbsoluteLayout>
+
+
+                            <!-- ÕIED -->
+                            <Label
+                                x:Name="Flowers"
+                                Text="🌸          🌸&#10;     🌼            🌸&#10;🌸          🌼          🌸"
+                                FontSize="25"
+                                IsVisible="False"
+                                HorizontalTextAlignment="Center"
+                                AbsoluteLayout.LayoutBounds="80,60,240,150" />
+
+                        </AbsoluteLayout>
+
+
+                        <!-- MURU DETAILID -->
+
+                        <Label
+                            Text="🌱"
+                            FontSize="26"
+                            AbsoluteLayout.LayoutBounds="0.15,0.92,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🌱"
+                            FontSize="22"
+                            AbsoluteLayout.LayoutBounds="0.28,0.88,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🌱"
+                            FontSize="26"
+                            AbsoluteLayout.LayoutBounds="0.72,0.91,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🌱"
+                            FontSize="22"
+                            AbsoluteLayout.LayoutBounds="0.85,0.88,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    </AbsoluteLayout>
+
+                </Border>
+
+
+                <!-- ========================= -->
+                <!-- TEGEVUS -->
+                <!-- ========================= -->
+
+                <Label
+                    Text="Vali tegevus"
+                    FontSize="17"
+                    FontAttributes="Bold"
+                    TextColor="#234F2E" />
 
                 <Picker
                     x:Name="ActionPicker"
@@ -73,28 +420,77 @@
 
                 </Picker>
 
-                <Button
-                    Text="Käivita"
-                    FontSize="18"
-                    Clicked="Käivita_Clicked" />
+
+                <!-- KÄIVITA + RESTART -->
+
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10">
+
+                    <Button
+                        Grid.Column="0"
+                        Text="▶ Käivita"
+                        FontSize="18"
+                        BackgroundColor="#43A047"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="Käivita_Clicked" />
+
+                    <Button
+                        Grid.Column="1"
+                        Text="↻ RESTART"
+                        FontSize="18"
+                        BackgroundColor="#E53935"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="Restart_Clicked" />
+
+                </Grid>
+
+
+                <!--
+                    KUKUTA PUU
+                    SIIN EI OLE Clicked="FallTree_Clicked"
+                    Nupp ühendatakse C# failis.
+                -->
 
                 <Button
-                    Text="RESTART"
+                    x:Name="FallTreeButton"
+                    Text="🌳 Kukuta puu 90°"
                     FontSize="18"
-                    BackgroundColor="Red"
+                    FontAttributes="Bold"
+                    BackgroundColor="#795548"
                     TextColor="White"
-                    Clicked="Restart_Clicked" />
+                    CornerRadius="12" />
 
-                <Label
-                    x:Name="InfoLabel"
-                    Text="Vali tegevus"
-                    FontSize="17"
-                    HorizontalOptions="Center"
-                    HorizontalTextAlignment="Center" />
+
+                <!-- INFO -->
+
+                <Border
+                    BackgroundColor="White"
+                    Stroke="#C8E6C9"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="12">
+
+                    <Label
+                        x:Name="InfoLabel"
+                        Text="Vali tegevus"
+                        FontSize="17"
+                        FontAttributes="Bold"
+                        TextColor="#2E7D32"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center" />
+
+                </Border>
+
+
+                <!-- LÄBIPAISTVUS -->
 
                 <Label
                     Text="Lehestiku läbipaistvus"
-                    FontSize="16" />
+                    FontSize="16"
+                    FontAttributes="Bold" />
 
                 <Slider
                     x:Name="OpacitySlider"
@@ -103,40 +499,76 @@
                     Value="1"
                     ValueChanged="Opacity_Changed" />
 
+
+                <!-- KIIRUS -->
+
                 <Label
                     Text="Animatsiooni kiirus: 500–2000 ms"
-                    FontSize="16" />
+                    FontSize="16"
+                    FontAttributes="Bold" />
 
                 <Stepper
                     x:Name="SpeedStepper"
                     Minimum="500"
                     Maximum="2000"
                     Increment="100"
-                    Value="1000" />
+                    Value="1000"
+                    HorizontalOptions="Center" />
+
+
+                <!-- AASTAAEG -->
+
+                <Label
+                    Text="Vali aastaaeg"
+                    FontSize="16"
+                    FontAttributes="Bold" />
+
+                <Picker
+                    x:Name="SeasonPicker"
+                    Title="Vali aastaaeg">
+
+                    <Picker.Items>
+                        <x:String>Kevad</x:String>
+                        <x:String>Suvi</x:String>
+                        <x:String>Sügis</x:String>
+                        <x:String>Talv</x:String>
+                    </Picker.Items>
+
+                </Picker>
+
+
+                <!-- KUUPÄEV -->
 
                 <Label
                     Text="Vali kuupäev"
-                    FontSize="16" />
+                    FontSize="16"
+                    FontAttributes="Bold" />
 
                 <DatePicker
                     x:Name="DatePickerControl" />
 
+
+                <!-- KELLAAEG -->
+
                 <Label
                     Text="Vali kellaaeg"
-                    FontSize="16" />
+                    FontSize="16"
+                    FontAttributes="Bold" />
 
                 <TimePicker
                     x:Name="TimePickerControl" />
 
             </VerticalStackLayout>
-
         </ScrollView>
 
+
         <!-- MUST EKRAAN -->
+
         <BoxView
             x:Name="BlackScreen"
             Color="Black"
-            IsVisible="False" />
+            IsVisible="False"
+            Opacity="0" />
 
     </Grid>
 
