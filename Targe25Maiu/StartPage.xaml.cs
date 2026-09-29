@@ -12,7 +12,10 @@ public partial class StartPage : ContentPage
         new DateTimePage(),
         new StepperSliderPage(),
         new RgbPage(),
-        new TreePage()
+        new TreePage(),
+        new PopUpPage(),
+        new TicTacToePage(),
+        new FriendsPage()
     };
 
     public List<string> LeheNimed = new List<string>()
@@ -22,7 +25,10 @@ public partial class StartPage : ContentPage
         "DateTime",
         "Stepper + Slider",
         "RGB",
-        "Puu"
+        "Puu",
+        "PopUp",
+        "Trips-Traps-Trull",
+        "Sõbrade kontaktandmed"
     };
 
     public StartPage()

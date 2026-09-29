@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Targe25Maiu.FriendsPage"
+    Title="Sõbrade kontaktandmed">
+
+    <TableView Intent="Form">
+        <TableRoot>
+
+            <TableSection Title="Sõbra andmed">
+
+                <ViewCell>
+                    <VerticalStackLayout Padding="15" Spacing="10">
+
+                        <Image x:Name="FriendImage"
+                               Source="dotnet_bot.png"
+                               HeightRequest="180"
+                               WidthRequest="180"
+                               Aspect="AspectFit"
+                               HorizontalOptions="Center" />
+
+                        <Button Text="TEE SÕBRAST FOTO"
+                                Clicked="TakePhoto_Clicked" />
+
+                    </VerticalStackLayout>
+                </ViewCell>
+
+                <ViewCell>
+                    <Entry x:Name="NameEntry"
+                           Placeholder="Nimi" />
+                </ViewCell>
+
+                <ViewCell>
+                    <Entry x:Name="EmailEntry"
+                           Placeholder="Email"
+                           Keyboard="Email" />
+                </ViewCell>
+
+                <ViewCell>
+                    <Entry x:Name="PhoneEntry"
+                           Placeholder="Telefon"
+                           Keyboard="Telephone" />
+                </ViewCell>
+
+                <ViewCell>
+                    <Editor x:Name="DescriptionEditor"
+                            Placeholder="Kirjeldus"
+                            HeightRequest="100" />
+                </ViewCell>
+
+            </TableSection>
+
+
+            <TableSection Title="Sõnum">
+
+                <ViewCell>
+                    <Editor x:Name="MessageEntry"
+                            Placeholder="Sisesta saadetav sõnum..."
+                            HeightRequest="100" />
+                </ViewCell>
+
+            </TableSection>
+
+
+            <TableSection Title="Lisavõimalused">
+
+                <ViewCell>
+                    <HorizontalStackLayout
+                        Padding="10"
+                        Spacing="10"
+                        HorizontalOptions="Center">
+
+                        <Button Text="HELISTA"
+                                Clicked="Call_Clicked" />
+
+                        <Button Text="SAADA SMS"
+                                Clicked="SendSms_Clicked" />
+
+                        <Button Text="SAADA EMAIL"
+                                Clicked="SendEmail_Clicked" />
+
+                    </HorizontalStackLayout>
+                </ViewCell>
+
+            </TableSection>
+
+        </TableRoot>
+    </TableView>
+
+</ContentPage>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Targe25Maiu.TicTacToePage"
+             Title="Trips-Traps-Trull"
+             BackgroundColor="#EAF4FF">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="18"
+            HorizontalOptions="Center"
+            MaximumWidthRequest="600">
+
+            <!-- PEALKIRI -->
+            <Label
+                Text="❌ TRIPS-TRAPS-TRULL ⭕"
+                FontSize="30"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                TextColor="#1E3A5F" />
+
+            <!-- KELLE KORD -->
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="15"
+                Padding="15">
+
+                <Label
+                    x:Name="PlayerLabel"
+                    Text="Mängija X kord"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    TextColor="#1E3A5F" />
+
+            </Frame>
+
+            <!-- MÄNGUVÄLI -->
+            <Grid
+                x:Name="GameGrid"
+                WidthRequest="420"
+                HeightRequest="420"
+                RowSpacing="5"
+                ColumnSpacing="5">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- RIDA 1 -->
+
+                <Button
+                    x:Name="Button00"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+                <Button
+                    x:Name="Button01"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+                <Button
+                    x:Name="Button02"
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+                <!-- RIDA 2 -->
+
+                <Button
+                    x:Name="Button10"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+                <Button
+                    x:Name="Button11"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+                <Button
+                    x:Name="Button12"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+                <!-- RIDA 3 -->
+
+                <Button
+                    x:Name="Button20"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+                <Button
+                    x:Name="Button21"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+                <Button
+                    x:Name="Button22"
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Clicked="GameButton_Clicked"
+                    FontSize="50"
+                    BackgroundColor="White"
+                    TextColor="Black" />
+
+            </Grid>
+
+            <!-- UUS MÄNG -->
+            <Button
+                Text="🔄 UUS MÄNG"
+                Clicked="NewGame_Clicked"
+                FontSize="18"
+                FontAttributes="Bold"
+                HeightRequest="55"
+                CornerRadius="12"
+                BackgroundColor="#2E7D32"
+                TextColor="White" />
+
+            <!-- KES ALUSTAB -->
+            <Button
+                Text="🎲 KES ALUSTAB?"
+                Clicked="WhoStarts_Clicked"
+                FontSize="18"
+                FontAttributes="Bold"
+                HeightRequest="55"
+                CornerRadius="12"
+                BackgroundColor="#3949AB"
+                TextColor="White" />
+
+            <!-- REEGLID -->
+            <Button
+                Text="📖 MÄNGUREEGLID"
+                Clicked="Rules_Clicked"
+                FontSize="18"
+                HeightRequest="55"
+                CornerRadius="12"
+                BackgroundColor="#607D8B"
+                TextColor="White" />
+
+            <!-- STATISTIKA -->
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="15"
+                Padding="15">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="📊 Statistika"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        TextColor="#1E3A5F" />
+
+                    <Grid ColumnDefinitions="*,*,*">
+
+                        <Label
+                            x:Name="XWinsLabel"
+                            Grid.Column="0"
+                            Text="X võite: 0"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            TextColor="Red" />
+
+                        <Label
+                            x:Name="OWinsLabel"
+                            Grid.Column="1"
+                            Text="O võite: 0"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            TextColor="Blue" />
+
+                        <Label
+                            x:Name="DrawsLabel"
+                            Grid.Column="2"
+                            Text="Viike: 0"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            TextColor="#1E3A5F" />
+
+                    </Grid>
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

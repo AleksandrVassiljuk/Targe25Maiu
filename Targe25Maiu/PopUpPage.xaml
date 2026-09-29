@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Targe25Maiu.PopUpPage"
+             Title="PopUp ülesanne"
+             BackgroundColor="#EAF4FF">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="25"
+            Spacing="18">
+
+            <Label
+                Text="🧠 Korrutustabeli test"
+                FontSize="30"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                TextColor="#1E3A5F" />
+
+            <Label
+                Text="Harjuta korrutamist ja kogu punkte!"
+                FontSize="17"
+                HorizontalOptions="Center"
+                TextColor="#4A5568" />
+
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="20"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="15">
+
+                    <Label
+                        Text="Mängija"
+                        FontSize="15"
+                        TextColor="Gray" />
+
+                    <Label
+                        x:Name="NameLabel"
+                        Text="Nime pole sisestatud"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#1E3A5F" />
+
+                    <Button
+                        Text="👤 Sisesta nimi"
+                        Clicked="NameButton_Clicked"
+                        CornerRadius="12" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="20"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="15">
+
+                    <Label
+                        Text="Raskusaste"
+                        FontSize="15"
+                        TextColor="Gray" />
+
+                    <Label
+                        x:Name="DifficultyLabel"
+                        Text="Lihtne"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#1E3A5F" />
+
+                    <Button
+                        Text="⚙️ Vali raskusaste"
+                        Clicked="DifficultyButton_Clicked"
+                        CornerRadius="12" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="20"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="15">
+
+                    <Label
+                        Text="Punktid"
+                        HorizontalOptions="Center"
+                        FontSize="17"
+                        TextColor="Gray" />
+
+                    <Label
+                        x:Name="ScoreLabel"
+                        Text="0"
+                        HorizontalOptions="Center"
+                        FontSize="40"
+                        FontAttributes="Bold"
+                        TextColor="#1E3A5F" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button
+                Text="▶ ALUSTA TESTI"
+                FontSize="20"
+                FontAttributes="Bold"
+                HeightRequest="60"
+                CornerRadius="15"
+                BackgroundColor="#2E7D32"
+                TextColor="White"
+                Clicked="StartButton_Clicked" />
+
+            <Button
+                Text="🔄 Nulli punktid"
+                FontSize="16"
+                CornerRadius="15"
+                BackgroundColor="#607D8B"
+                TextColor="White"
+                Clicked="ResetButton_Clicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
