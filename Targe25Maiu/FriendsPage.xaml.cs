@@ -1,51 +1,63 @@
+using Microsoft.Maui.ApplicationModel.Communication;
+using Microsoft.Maui.Media;
+
 namespace Targe25Maiu;
 
 public partial class FriendsPage : ContentPage
 {
+    // Juhuslike tervituste nimekiri
+    private readonly string[] greetings =
+    {
+        "Palju õnne ja kõike head!",
+        "Soovin sulle imelist päeva!",
+        "Palju rõõmu ja häid hetki!",
+        "Parimad soovid sulle!",
+        "Olgu sinu päev täis rõõmu!"
+    };
+
     public FriendsPage()
     {
         InitializeComponent();
     }
 
-    // FOTO TEGEMINE
+
+    // PILDISTAB SÕPRA TELEFONI KAAMERAGA
     private async void TakePhoto_Clicked(object sender, EventArgs e)
     {
         try
         {
+            // Kontrollime, kas telefon toetab kaameraga pildistamist
             if (!MediaPicker.Default.IsCaptureSupported)
             {
                 await DisplayAlertAsync(
                     "Viga",
-                    "Kaamera pole selles seadmes toetatud.",
+                    "Kaamera ei ole selles seadmes toetatud.",
                     "OK");
 
                 return;
             }
 
+            // Avame telefoni kaamera
             FileResult? photo =
                 await MediaPicker.Default.CapturePhotoAsync();
 
-            if (photo == null)
-                return;
-
-            byte[] imageBytes;
-
-            using (Stream stream = await photo.OpenReadAsync())
-            using (MemoryStream memoryStream = new MemoryStream())
+            // Kui kasutaja tegi pildi
+            if (photo != null)
             {
-                await stream.CopyToAsync(memoryStream);
-                imageBytes = memoryStream.ToArray();
-            }
+                // Avame pildi
+                Stream stream =
+                    await photo.OpenReadAsync();
 
-            FriendImage.Source =
-                ImageSource.FromStream(() =>
-                    new MemoryStream(imageBytes));
+                // Näitame pilti Image elemendis
+                FriendImage.Source =
+                    ImageSource.FromStream(() => stream);
+            }
         }
         catch (Exception ex)
         {
             await DisplayAlertAsync(
                 "Viga",
-                "Foto tegemine ebaõnnestus: " + ex.Message,
+                ex.Message,
                 "OK");
         }
     }
@@ -54,8 +66,10 @@ public partial class FriendsPage : ContentPage
     // HELISTAMINE
     private async void Call_Clicked(object sender, EventArgs e)
     {
+        // Loeme telefoninumbri tabelist
         string phone = PhoneEntry.Text ?? "";
 
+        // Kontrollime, kas telefoninumber on sisestatud
         if (string.IsNullOrWhiteSpace(phone))
         {
             await DisplayAlertAsync(
@@ -68,23 +82,14 @@ public partial class FriendsPage : ContentPage
 
         try
         {
-            if (PhoneDialer.Default.IsSupported)
-            {
-                PhoneDialer.Default.Open(phone);
-            }
-            else
-            {
-                await DisplayAlertAsync(
-                    "Viga",
-                    "Helistamine pole selles seadmes toetatud.",
-                    "OK");
-            }
+            // Avame telefoni helistamise rakenduse
+            PhoneDialer.Default.Open(phone);
         }
         catch (Exception ex)
         {
             await DisplayAlertAsync(
                 "Viga",
-                "Helistamine ebaõnnestus: " + ex.Message,
+                "Helistamist ei saanud avada.\n" + ex.Message,
                 "OK");
         }
     }
@@ -93,7 +98,10 @@ public partial class FriendsPage : ContentPage
     // SMS SAATMINE
     private async void SendSms_Clicked(object sender, EventArgs e)
     {
+        // Loeme telefoninumbri tabelist
         string phone = PhoneEntry.Text ?? "";
+
+        // Loeme sõnumi tabelist
         string message = MessageEntry.Text ?? "";
 
         if (string.IsNullOrWhiteSpace(phone))
@@ -118,18 +126,21 @@ public partial class FriendsPage : ContentPage
 
         try
         {
+            // Loome SMS sõnumi
+            SmsMessage sms =
+                new SmsMessage(message, phone);
+
+            // Kontrollime, kas SMS rakendus on olemas
             if (Sms.Default.IsComposeSupported)
             {
-                SmsMessage sms =
-                    new SmsMessage(message, phone);
-
+                // Avame SMS rakenduse
                 await Sms.Default.ComposeAsync(sms);
             }
             else
             {
                 await DisplayAlertAsync(
                     "Viga",
-                    "SMS-i saatmine pole selles seadmes toetatud.",
+                    "SMS saatmine pole selles seadmes toetatud.",
                     "OK");
             }
         }
@@ -137,7 +148,7 @@ public partial class FriendsPage : ContentPage
         {
             await DisplayAlertAsync(
                 "Viga",
-                "SMS-i avamine ebaõnnestus: " + ex.Message,
+                "SMS-i ei saanud avada.\n" + ex.Message,
                 "OK");
         }
     }
@@ -146,14 +157,17 @@ public partial class FriendsPage : ContentPage
     // EMAILI SAATMINE
     private async void SendEmail_Clicked(object sender, EventArgs e)
     {
-        string email = EmailEntry.Text ?? "";
+        // Loeme emaili tabelist
+        string emailAddress = EmailEntry.Text ?? "";
+
+        // Loeme sõnumi tabelist
         string message = MessageEntry.Text ?? "";
 
-        if (string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(emailAddress))
         {
             await DisplayAlertAsync(
                 "Viga",
-                "Sisesta e-maili aadress.",
+                "Sisesta e-mail.",
                 "OK");
 
             return;
@@ -171,21 +185,24 @@ public partial class FriendsPage : ContentPage
 
         try
         {
+            // Loome uue emaili
+            EmailMessage email = new EmailMessage
+            {
+                Subject = "Tervitus",
+                Body = message,
+                BodyFormat = EmailBodyFormat.PlainText,
+
+                To = new List<string>
+                {
+                    emailAddress
+                }
+            };
+
+            // Kontrollime, kas emaili rakendus on olemas
             if (Email.Default.IsComposeSupported)
             {
-                EmailMessage emailMessage =
-                    new EmailMessage
-                    {
-                        Subject = "Sõnum sõbrale",
-                        Body = message,
-                        BodyFormat = EmailBodyFormat.PlainText,
-                        To = new List<string>
-                        {
-                            email
-                        }
-                    };
-
-                await Email.Default.ComposeAsync(emailMessage);
+                // Avame emaili rakenduse
+                await Email.Default.ComposeAsync(email);
             }
             else
             {
@@ -199,8 +216,43 @@ public partial class FriendsPage : ContentPage
         {
             await DisplayAlertAsync(
                 "Viga",
-                "E-maili avamine ebaõnnestus: " + ex.Message,
+                "E-maili ei saanud avada.\n" + ex.Message,
                 "OK");
+        }
+    }
+
+
+    // JUHUSLIK TERVITUS
+    private async void Greeting_Clicked(object sender, EventArgs e)
+    {
+        // Valime nimekirjast juhusliku tervituse
+        Random random = new Random();
+
+        string greeting =
+            greetings[random.Next(greetings.Length)];
+
+        // Paneme tervituse sõnumi lahtrisse
+        MessageEntry.Text = greeting;
+
+        // Küsime kasutajalt, kuidas ta soovib tervituse saata
+        string? choice =
+            await DisplayActionSheetAsync(
+                "Kuidas soovid tervituse saata?",
+                "Tühista",
+                null,
+                "SMS",
+                "E-mail");
+
+        // SMS
+        if (choice == "SMS")
+        {
+            SendSms_Clicked(sender, e);
+        }
+
+        // EMAIL
+        else if (choice == "E-mail")
+        {
+            SendEmail_Clicked(sender, e);
         }
     }
 }

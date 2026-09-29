@@ -4,13 +4,16 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="Targe25Maiu.FriendsPage"
-    Title="Sõbrade kontaktandmed">
+    Title="Sõbrade kontaktandmed"
+    BackgroundColor="#F2F6FA">
 
     <TableView Intent="Form">
         <TableRoot>
 
+            <!-- SÕBRA ANDMED -->
             <TableSection Title="Sõbra andmed">
 
+                <!-- Sõbra foto -->
                 <ViewCell>
                     <VerticalStackLayout Padding="15" Spacing="10">
 
@@ -27,23 +30,27 @@
                     </VerticalStackLayout>
                 </ViewCell>
 
+                <!-- Nimi -->
                 <ViewCell>
                     <Entry x:Name="NameEntry"
                            Placeholder="Nimi" />
                 </ViewCell>
 
+                <!-- Email -->
                 <ViewCell>
                     <Entry x:Name="EmailEntry"
                            Placeholder="Email"
                            Keyboard="Email" />
                 </ViewCell>
 
+                <!-- Telefon -->
                 <ViewCell>
                     <Entry x:Name="PhoneEntry"
                            Placeholder="Telefon"
                            Keyboard="Telephone" />
                 </ViewCell>
 
+                <!-- Kirjeldus -->
                 <ViewCell>
                     <Editor x:Name="DescriptionEditor"
                             Placeholder="Kirjeldus"
@@ -53,6 +60,7 @@
             </TableSection>
 
 
+            <!-- SÕNUM -->
             <TableSection Title="Sõnum">
 
                 <ViewCell>
@@ -64,24 +72,48 @@
             </TableSection>
 
 
+            <!-- LISAVÕIMALUSED -->
             <TableSection Title="Lisavõimalused">
 
                 <ViewCell>
-                    <HorizontalStackLayout
-                        Padding="10"
-                        Spacing="10"
-                        HorizontalOptions="Center">
+                    <VerticalStackLayout Padding="10"
+                                         Spacing="10">
 
-                        <Button Text="HELISTA"
-                                Clicked="Call_Clicked" />
+                        <HorizontalStackLayout
+                            Spacing="10"
+                            HorizontalOptions="Center">
 
-                        <Button Text="SAADA SMS"
-                                Clicked="SendSms_Clicked" />
+                            <Button Text="HELISTA"
+                                    Clicked="Call_Clicked" />
 
-                        <Button Text="SAADA EMAIL"
-                                Clicked="SendEmail_Clicked" />
+                            <Button Text="SAADA SMS"
+                                    Clicked="SendSms_Clicked" />
 
-                    </HorizontalStackLayout>
+                            <Button Text="SAADA EMAIL"
+                                    Clicked="SendEmail_Clicked" />
+
+                        </HorizontalStackLayout>
+
+                    </VerticalStackLayout>
+                </ViewCell>
+
+            </TableSection>
+
+
+            <!-- TERVITUSED -->
+            <TableSection Title="Tervitus">
+
+                <ViewCell>
+                    <VerticalStackLayout Padding="15"
+                                         Spacing="10">
+
+                        <Label Text="Saada sõbrale juhuslik tervitus"
+                               HorizontalOptions="Center" />
+
+                        <Button Text="ÕNNITLUSED"
+                                Clicked="Greeting_Clicked" />
+
+                    </VerticalStackLayout>
                 </ViewCell>
 
             </TableSection>

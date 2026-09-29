@@ -28,7 +28,7 @@ public partial class StartPage : ContentPage
         "Puu",
         "PopUp",
         "Trips-Traps-Trull",
-        "Sõbrade kontaktandmed"
+        "Kontaktandmed"
     };
 
     public StartPage()

@@ -4,228 +4,477 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Targe25Maiu.TicTacToePage"
              Title="Trips-Traps-Trull"
-             BackgroundColor="#EAF4FF">
+             BackgroundColor="#E8F1F8">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30"
-            Spacing="18"
-            HorizontalOptions="Center"
-            MaximumWidthRequest="600">
+    <Grid>
 
-            <!-- PEALKIRI -->
-            <Label
-                Text="❌ TRIPS-TRAPS-TRULL ⭕"
-                FontSize="30"
-                FontAttributes="Bold"
+        <ScrollView>
+
+            <VerticalStackLayout
+                Padding="25"
+                Spacing="15"
                 HorizontalOptions="Center"
-                TextColor="#1E3A5F" />
+                MaximumWidthRequest="520">
 
-            <!-- KELLE KORD -->
-            <Frame
-                BackgroundColor="White"
-                CornerRadius="15"
-                Padding="15">
-
-                <Label
-                    x:Name="PlayerLabel"
-                    Text="Mängija X kord"
-                    FontSize="22"
-                    FontAttributes="Bold"
-                    HorizontalOptions="Center"
-                    TextColor="#1E3A5F" />
-
-            </Frame>
-
-            <!-- MÄNGUVÄLI -->
-            <Grid
-                x:Name="GameGrid"
-                WidthRequest="420"
-                HeightRequest="420"
-                RowSpacing="5"
-                ColumnSpacing="5">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <!-- RIDA 1 -->
-
-                <Button
-                    x:Name="Button00"
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
+                <Frame
                     BackgroundColor="White"
-                    TextColor="Black" />
+                    CornerRadius="15"
+                    Padding="15">
 
-                <Button
-                    x:Name="Button01"
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
-                    BackgroundColor="White"
-                    TextColor="Black" />
-
-                <Button
-                    x:Name="Button02"
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
-                    BackgroundColor="White"
-                    TextColor="Black" />
-
-                <!-- RIDA 2 -->
-
-                <Button
-                    x:Name="Button10"
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
-                    BackgroundColor="White"
-                    TextColor="Black" />
-
-                <Button
-                    x:Name="Button11"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
-                    BackgroundColor="White"
-                    TextColor="Black" />
-
-                <Button
-                    x:Name="Button12"
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
-                    BackgroundColor="White"
-                    TextColor="Black" />
-
-                <!-- RIDA 3 -->
-
-                <Button
-                    x:Name="Button20"
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
-                    BackgroundColor="White"
-                    TextColor="Black" />
-
-                <Button
-                    x:Name="Button21"
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
-                    BackgroundColor="White"
-                    TextColor="Black" />
-
-                <Button
-                    x:Name="Button22"
-                    Grid.Row="2"
-                    Grid.Column="2"
-                    Clicked="GameButton_Clicked"
-                    FontSize="50"
-                    BackgroundColor="White"
-                    TextColor="Black" />
-
-            </Grid>
-
-            <!-- UUS MÄNG -->
-            <Button
-                Text="🔄 UUS MÄNG"
-                Clicked="NewGame_Clicked"
-                FontSize="18"
-                FontAttributes="Bold"
-                HeightRequest="55"
-                CornerRadius="12"
-                BackgroundColor="#2E7D32"
-                TextColor="White" />
-
-            <!-- KES ALUSTAB -->
-            <Button
-                Text="🎲 KES ALUSTAB?"
-                Clicked="WhoStarts_Clicked"
-                FontSize="18"
-                FontAttributes="Bold"
-                HeightRequest="55"
-                CornerRadius="12"
-                BackgroundColor="#3949AB"
-                TextColor="White" />
-
-            <!-- REEGLID -->
-            <Button
-                Text="📖 MÄNGUREEGLID"
-                Clicked="Rules_Clicked"
-                FontSize="18"
-                HeightRequest="55"
-                CornerRadius="12"
-                BackgroundColor="#607D8B"
-                TextColor="White" />
-
-            <!-- STATISTIKA -->
-            <Frame
-                BackgroundColor="White"
-                CornerRadius="15"
-                Padding="15">
-
-                <VerticalStackLayout Spacing="10">
-
-                    <Label
-                        Text="📊 Statistika"
-                        FontSize="20"
-                        FontAttributes="Bold"
-                        HorizontalOptions="Center"
-                        TextColor="#1E3A5F" />
-
-                    <Grid ColumnDefinitions="*,*,*">
+                    <VerticalStackLayout Spacing="10">
 
                         <Label
-                            x:Name="XWinsLabel"
+                            Text="Mängurežiim"
+                            FontSize="17"
+                            FontAttributes="Bold"
+                            TextColor="#263238" />
+
+                        <Picker
+                            x:Name="GameModePicker"
+                            Title="Vali mängurežiim"
+                            SelectedIndexChanged="GameModePicker_SelectedIndexChanged">
+
+                            <Picker.Items>
+                                <x:String>2 mängijat</x:String>
+                                <x:String>Mängija vs Bot</x:String>
+                            </Picker.Items>
+
+                        </Picker>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <Frame
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    Padding="15">
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="Best of 3"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="#263238" />
+
+                        <Label
+                            x:Name="MatchScoreLabel"
+                            Text="X  0 : 0  O"
+                            FontSize="27"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="#3F51B5" />
+
+                        <Label
+                            x:Name="MatchInfoLabel"
+                            Text="Esimene, kes saab 2 võitu, võidab matši"
+                            FontSize="13"
+                            HorizontalOptions="Center"
+                            TextColor="#607D8B" />
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <Frame
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    Padding="15">
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            x:Name="PlayerLabel"
+                            Text="Mängija X kord"
+                            FontSize="21"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="#3F51B5" />
+
+                        <Grid ColumnDefinitions="*,*">
+
+                            <Label
+                                x:Name="RoundLabel"
+                                Grid.Column="0"
+                                Text="Voor: 1"
+                                HorizontalOptions="Center"
+                                TextColor="#607D8B" />
+
+                            <Label
+                                x:Name="MovesLabel"
+                                Grid.Column="1"
+                                Text="Käike: 0"
+                                HorizontalOptions="Center"
+                                TextColor="#607D8B" />
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <Frame
+                    BackgroundColor="#90A4AE"
+                    CornerRadius="15"
+                    Padding="7">
+
+                    <Grid
+                        WidthRequest="390"
+                        HeightRequest="390"
+                        RowSpacing="6"
+                        ColumnSpacing="6">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button
+                            x:Name="Button00"
+                            Grid.Row="0"
                             Grid.Column="0"
-                            Text="X võite: 0"
-                            FontSize="16"
-                            HorizontalOptions="Center"
-                            TextColor="Red" />
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
 
-                        <Label
-                            x:Name="OWinsLabel"
+                        <Button
+                            x:Name="Button01"
+                            Grid.Row="0"
                             Grid.Column="1"
-                            Text="O võite: 0"
-                            FontSize="16"
-                            HorizontalOptions="Center"
-                            TextColor="Blue" />
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
 
-                        <Label
-                            x:Name="DrawsLabel"
+                        <Button
+                            x:Name="Button02"
+                            Grid.Row="0"
                             Grid.Column="2"
-                            Text="Viike: 0"
-                            FontSize="16"
-                            HorizontalOptions="Center"
-                            TextColor="#1E3A5F" />
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
+
+                        <Button
+                            x:Name="Button10"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
+
+                        <Button
+                            x:Name="Button11"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
+
+                        <Button
+                            x:Name="Button12"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
+
+                        <Button
+                            x:Name="Button20"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
+
+                        <Button
+                            x:Name="Button21"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
+
+                        <Button
+                            x:Name="Button22"
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Clicked="GameButton_Clicked"
+                            FontSize="50"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            BackgroundColor="White" />
 
                     </Grid>
 
-                </VerticalStackLayout>
+                </Frame>
 
-            </Frame>
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10">
 
-        </VerticalStackLayout>
-    </ScrollView>
+                    <Button
+                        Grid.Column="0"
+                        Text="Uus voor"
+                        Clicked="NewGame_Clicked"
+                        HeightRequest="52"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        BackgroundColor="#388E3C"
+                        TextColor="White" />
+
+                    <Button
+                        Grid.Column="1"
+                        Text="Kes alustab?"
+                        Clicked="WhoStarts_Clicked"
+                        HeightRequest="52"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        BackgroundColor="#3F51B5"
+                        TextColor="White" />
+
+                </Grid>
+
+                <Frame
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    Padding="15">
+
+                    <VerticalStackLayout Spacing="10">
+
+                        <Label
+                            Text="Statistika"
+                            FontSize="19"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="#263238" />
+
+                        <Grid ColumnDefinitions="*,*,*">
+
+                            <VerticalStackLayout Grid.Column="0">
+
+                                <Label
+                                    Text="Mängija X"
+                                    HorizontalOptions="Center"
+                                    FontAttributes="Bold"
+                                    TextColor="#C62828" />
+
+                                <Label
+                                    x:Name="XWinsLabel"
+                                    Text="Võite: 0"
+                                    HorizontalOptions="Center"
+                                    TextColor="#C62828" />
+
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1">
+
+                                <Label
+                                    Text="Mängija O"
+                                    HorizontalOptions="Center"
+                                    FontAttributes="Bold"
+                                    TextColor="#1565C0" />
+
+                                <Label
+                                    x:Name="OWinsLabel"
+                                    Text="Võite: 0"
+                                    HorizontalOptions="Center"
+                                    TextColor="#1565C0" />
+
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="2">
+
+                                <Label
+                                    Text="Viigid"
+                                    HorizontalOptions="Center"
+                                    FontAttributes="Bold"
+                                    TextColor="#455A64" />
+
+                                <Label
+                                    x:Name="DrawsLabel"
+                                    Text="Viike: 0"
+                                    HorizontalOptions="Center"
+                                    TextColor="#455A64" />
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                        <BoxView
+                            HeightRequest="1"
+                            BackgroundColor="#DDDDDD" />
+
+                        <Label
+                            x:Name="LastWinnerLabel"
+                            Text="Viimane võitja: -"
+                            HorizontalOptions="Center"
+                            TextColor="#607D8B" />
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10">
+
+                    <Button
+                        Grid.Column="0"
+                        Text="Reeglid"
+                        Clicked="Rules_Clicked"
+                        HeightRequest="48"
+                        CornerRadius="10"
+                        BackgroundColor="#607D8B"
+                        TextColor="White" />
+
+                    <Button
+                        Grid.Column="1"
+                        Text="Uus matš"
+                        Clicked="ResetMatch_Clicked"
+                        HeightRequest="48"
+                        CornerRadius="10"
+                        BackgroundColor="#C62828"
+                        TextColor="White" />
+
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+        <Grid
+            x:Name="FireworksLayer"
+            IsVisible="False"
+            InputTransparent="True"
+            BackgroundColor="#DD263238">
+
+            <Label
+                x:Name="Firework1"
+                Text="*"
+                FontSize="90"
+                TextColor="#FFD54F"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                Margin="30,70,0,0" />
+
+            <Label
+                x:Name="Firework2"
+                Text="*"
+                FontSize="110"
+                TextColor="#EF5350"
+                HorizontalOptions="Center"
+                VerticalOptions="Start"
+                Margin="0,30,0,0" />
+
+            <Label
+                x:Name="Firework3"
+                Text="*"
+                FontSize="90"
+                TextColor="#42A5F5"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="0,80,30,0" />
+
+            <Label
+                x:Name="Firework4"
+                Text="*"
+                FontSize="80"
+                TextColor="#66BB6A"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                Margin="30,0,0,0" />
+
+            <Label
+                x:Name="Firework5"
+                Text="*"
+                FontSize="80"
+                TextColor="#AB47BC"
+                HorizontalOptions="End"
+                VerticalOptions="Center"
+                Margin="0,0,30,0" />
+
+            <Label
+                x:Name="Firework6"
+                Text="*"
+                FontSize="90"
+                TextColor="#FF7043"
+                HorizontalOptions="Start"
+                VerticalOptions="End"
+                Margin="30,0,0,60" />
+
+            <Label
+                x:Name="Firework7"
+                Text="*"
+                FontSize="110"
+                TextColor="#FFD54F"
+                HorizontalOptions="Center"
+                VerticalOptions="End"
+                Margin="0,0,0,30" />
+
+            <Label
+                x:Name="Firework8"
+                Text="*"
+                FontSize="90"
+                TextColor="#42A5F5"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,30,70" />
+
+            <VerticalStackLayout
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Spacing="10">
+
+                <Label
+                    Text="MATŠ VÕIDETUD"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    HorizontalOptions="Center" />
+
+                <Label
+                    x:Name="ChampionLabel"
+                    Text="Mängija X võitis"
+                    FontSize="32"
+                    FontAttributes="Bold"
+                    TextColor="#FFD54F"
+                    HorizontalTextAlignment="Center"
+                    HorizontalOptions="Center" />
+
+                <Label
+                    Text="Best of 3"
+                    FontSize="20"
+                    TextColor="White"
+                    HorizontalOptions="Center" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+    </Grid>
 
 </ContentPage>
