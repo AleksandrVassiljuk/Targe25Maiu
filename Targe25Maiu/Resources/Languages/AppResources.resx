@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+	</resheader>
+
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+	</resheader>
+
+	<data name="PageTitle" xml:space="preserve">
+    <value>Programming Languages</value>
+  </data>
+
+	<data name="LanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+
+	<data name="CSharpDescription" xml:space="preserve">
+    <value>Powerful object-oriented language</value>
+  </data>
+
+	<data name="PythonDescription" xml:space="preserve">
+    <value>Great for data and automation</value>
+  </data>
+
+	<data name="JavaScriptDescription" xml:space="preserve">
+    <value>The language of the web</value>
+  </data>
+
+	<data name="JavaDescription" xml:space="preserve">
+    <value>Write once, run anywhere</value>
+  </data>
+
+	<data name="CppDescription" xml:space="preserve">
+    <value>High-performance system language</value>
+  </data>
+
+	<data name="DetailsTitle" xml:space="preserve">
+    <value>More information</value>
+  </data>
+</root>

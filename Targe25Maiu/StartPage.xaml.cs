@@ -15,7 +15,9 @@ public partial class StartPage : ContentPage
         new TreePage(),
         new PopUpPage(),
         new TicTacToePage(),
-        new FriendsPage()
+        new FriendsPage(),
+        new ListViewPage(),
+        new CarouselPage()
     };
 
     public List<string> LeheNimed = new List<string>()
@@ -28,7 +30,9 @@ public partial class StartPage : ContentPage
         "Puu",
         "PopUp",
         "Trips-Traps-Trull",
-        "Kontaktandmed"
+        "Kontaktandmed",
+        "Telefonid",
+        "Carousel"
     };
 
     public StartPage()

@@ -1,124 +1,179 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<ContentPage
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="Targe25Maiu.FriendsPage"
-    Title="Sõbrade kontaktandmed"
-    BackgroundColor="#F2F6FA">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Targe25Maiu.FriendsPage"
+             Title="Kontaktid"
+             BackgroundColor="#F2F6FA">
 
-    <TableView Intent="Form">
-        <TableRoot>
+    <Grid Padding="15"
+          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
+          RowSpacing="8">
 
-            <!-- SÕBRA ANDMED -->
-            <TableSection Title="Sõbra andmed">
+        <!-- PEALKIRI -->
+        <Label Grid.Row="0"
+               Text="Sõprade kontaktid"
+               FontSize="26"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
 
-                <!-- Sõbra foto -->
-                <ViewCell>
-                    <VerticalStackLayout Padding="15" Spacing="10">
+        <!-- PILT -->
+        <VerticalStackLayout Grid.Row="1"
+                             Spacing="5"
+                             HorizontalOptions="Center">
 
-                        <Image x:Name="FriendImage"
-                               Source="dotnet_bot.png"
-                               HeightRequest="180"
-                               WidthRequest="180"
-                               Aspect="AspectFit"
-                               HorizontalOptions="Center" />
+            <Image x:Name="FriendImage"
+                   Source="dotnet_bot.png"
+                   WidthRequest="100"
+                   HeightRequest="100"
+                   Aspect="AspectFit" />
 
-                        <Button Text="TEE SÕBRAST FOTO"
-                                Clicked="TakePhoto_Clicked" />
+            <HorizontalStackLayout Spacing="10">
 
-                    </VerticalStackLayout>
-                </ViewCell>
+                <!-- Teeb kaameraga foto -->
+                <Button Text="TEE FOTO"
+                        Clicked="TakePhoto_Clicked" />
 
-                <!-- Nimi -->
-                <ViewCell>
-                    <Entry x:Name="NameEntry"
-                           Placeholder="Nimi" />
-                </ViewCell>
+                <!-- Valib galeriist foto -->
+                <Button Text="VALI GALERIIST"
+                        Clicked="ChoosePhoto_Clicked" />
 
-                <!-- Email -->
-                <ViewCell>
-                    <Entry x:Name="EmailEntry"
-                           Placeholder="Email"
-                           Keyboard="Email" />
-                </ViewCell>
+            </HorizontalStackLayout>
 
-                <!-- Telefon -->
-                <ViewCell>
-                    <Entry x:Name="PhoneEntry"
-                           Placeholder="Telefon"
-                           Keyboard="Telephone" />
-                </ViewCell>
+            <Label x:Name="PiltLabel"
+                   Text="Pilti pole valitud"
+                   FontSize="12"
+                   HorizontalOptions="Center" />
 
-                <!-- Kirjeldus -->
-                <ViewCell>
-                    <Editor x:Name="DescriptionEditor"
-                            Placeholder="Kirjeldus"
-                            HeightRequest="100" />
-                </ViewCell>
+        </VerticalStackLayout>
 
-            </TableSection>
+        <!-- NIMI -->
+        <Entry Grid.Row="2"
+               x:Name="NameEntry"
+               Placeholder="Nimi" />
 
+        <!-- EMAIL -->
+        <Entry Grid.Row="3"
+               x:Name="EmailEntry"
+               Placeholder="Email"
+               Keyboard="Email" />
 
-            <!-- SÕNUM -->
-            <TableSection Title="Sõnum">
+        <!-- TELEFON -->
+        <Entry Grid.Row="4"
+               x:Name="PhoneEntry"
+               Placeholder="Telefon"
+               Keyboard="Telephone" />
 
-                <ViewCell>
-                    <Editor x:Name="MessageEntry"
-                            Placeholder="Sisesta saadetav sõnum..."
-                            HeightRequest="100" />
-                </ViewCell>
+        <!-- KIRJELDUS -->
+        <Entry Grid.Row="5"
+               x:Name="DescriptionEntry"
+               Placeholder="Kirjeldus" />
 
-            </TableSection>
+        <!-- LISA / MUUDA / KUSTUTA -->
+        <HorizontalStackLayout Grid.Row="6"
+                               Spacing="10"
+                               HorizontalOptions="Center">
 
+            <Button Text="LISA"
+                    Clicked="AddFriend_Clicked" />
 
-            <!-- LISAVÕIMALUSED -->
-            <TableSection Title="Lisavõimalused">
+            <Button Text="MUUDA"
+                    Clicked="EditFriend_Clicked" />
 
-                <ViewCell>
-                    <VerticalStackLayout Padding="10"
-                                         Spacing="10">
+            <Button Text="KUSTUTA"
+                    Clicked="DeleteFriend_Clicked" />
 
-                        <HorizontalStackLayout
-                            Spacing="10"
-                            HorizontalOptions="Center">
+        </HorizontalStackLayout>
 
-                            <Button Text="HELISTA"
-                                    Clicked="Call_Clicked" />
+        <!-- SÕNUM -->
+        <Entry Grid.Row="7"
+               x:Name="MessageEntry"
+               Placeholder="Kirjuta sõnum..." />
 
-                            <Button Text="SAADA SMS"
-                                    Clicked="SendSms_Clicked" />
+        <!-- KONTAKTI NUPUD -->
+        <HorizontalStackLayout Grid.Row="8"
+                               Spacing="6"
+                               HorizontalOptions="Center">
 
-                            <Button Text="SAADA EMAIL"
-                                    Clicked="SendEmail_Clicked" />
+            <Button Text="HELISTA"
+                    FontSize="12"
+                    Clicked="Call_Clicked" />
 
-                        </HorizontalStackLayout>
+            <Button Text="SMS"
+                    FontSize="12"
+                    Clicked="SendSms_Clicked" />
 
-                    </VerticalStackLayout>
-                </ViewCell>
+            <Button Text="EMAIL"
+                    FontSize="12"
+                    Clicked="SendEmail_Clicked" />
 
-            </TableSection>
+            <Button Text="ÕNNITLUSED"
+                    FontSize="12"
+                    Clicked="Greeting_Clicked" />
 
+        </HorizontalStackLayout>
 
-            <!-- TERVITUSED -->
-            <TableSection Title="Tervitus">
+        <!-- KONTAKTIDE NIMEKIRI -->
+        <ListView Grid.Row="9"
+                  x:Name="FriendsList"
+                  HasUnevenRows="True"
+                  SelectionMode="Single"
+                  ItemTapped="Friend_ItemTapped">
 
-                <ViewCell>
-                    <VerticalStackLayout Padding="15"
-                                         Spacing="10">
+            <ListView.ItemTemplate>
 
-                        <Label Text="Saada sõbrale juhuslik tervitus"
-                               HorizontalOptions="Center" />
+                <DataTemplate>
 
-                        <Button Text="ÕNNITLUSED"
-                                Clicked="Greeting_Clicked" />
+                    <ViewCell>
 
-                    </VerticalStackLayout>
-                </ViewCell>
+                        <Grid Padding="10"
+                              ColumnDefinitions="110,*"
+                              MinimumHeightRequest="120">
 
-            </TableSection>
+                            <!-- KONTAKTI PILT -->
+                            <Image Grid.Column="0"
+                                   Source="{Binding Pilt}"
+                                   WidthRequest="90"
+                                   HeightRequest="100"
+                                   Aspect="AspectFit"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
 
-        </TableRoot>
-    </TableView>
+                            <!-- KONTAKTI ANDMED -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                 Margin="15,0,0,0"
+                                                 Spacing="4"
+                                                 VerticalOptions="Center">
+
+                                <Label Text="{Binding Nimi}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="Black" />
+
+                                <Label Text="{Binding Telefon}"
+                                       FontSize="15"
+                                       TextColor="Black" />
+
+                                <Label Text="{Binding Email}"
+                                       FontSize="14"
+                                       TextColor="Black" />
+
+                                <Label Text="{Binding Kirjeldus}"
+                                       FontSize="13"
+                                       TextColor="Gray" />
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                    </ViewCell>
+
+                </DataTemplate>
+
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+    </Grid>
 
 </ContentPage>

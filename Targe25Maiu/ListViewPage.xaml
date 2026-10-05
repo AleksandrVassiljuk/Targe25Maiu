@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Targe25Maiu.ListViewPage"
+             Title="Telefonid"
+             BackgroundColor="#F2F6FA">
+
+    <Grid Padding="15"
+          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*"
+          RowSpacing="10">
+
+        <!-- LEHE PEALKIRI -->
+        <Label Grid.Row="0"
+               Text="Telefonide nimekiri"
+               FontSize="26"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+
+        <!-- TELEFONI NIMETUS -->
+        <Entry Grid.Row="1"
+               x:Name="NimetusEntry"
+               Placeholder="Telefoni nimetus"
+               FontSize="16" />
+
+
+        <!-- TELEFONI TOOTJA -->
+        <Entry Grid.Row="2"
+               x:Name="TootjaEntry"
+               Placeholder="Tootja"
+               FontSize="16" />
+
+
+        <!-- TELEFONI HIND -->
+        <Entry Grid.Row="3"
+               x:Name="HindEntry"
+               Placeholder="Hind €"
+               Keyboard="Numeric"
+               FontSize="16" />
+
+
+        <!-- PILDI VALIMINE -->
+        <VerticalStackLayout Grid.Row="4"
+                             Spacing="5">
+
+            <!-- Avab galerii -->
+            <Button Text="VALI PILT GALERIIST"
+                    Clicked="ValiPilt_Clicked"
+                    HeightRequest="50" />
+
+            <!-- Näitab milline pilt on valitud -->
+            <Label x:Name="PiltLabel"
+                   Text="Pilti pole valitud"
+                   FontSize="13"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+
+
+        <!-- LISA / MUUDA / KUSTUTA -->
+        <HorizontalStackLayout Grid.Row="5"
+                               Spacing="10"
+                               HorizontalOptions="Center">
+
+            <!-- Lisab uue telefoni -->
+            <Button Text="LISA"
+                    Clicked="Lisa_Clicked"
+                    HeightRequest="50" />
+
+            <!-- Muudab valitud telefoni -->
+            <Button Text="MUUDA"
+                    Clicked="Muuda_Clicked"
+                    HeightRequest="50" />
+
+            <!-- Kustutab valitud telefoni -->
+            <Button Text="KUSTUTA"
+                    Clicked="Kustuta_Clicked"
+                    HeightRequest="50" />
+
+        </HorizontalStackLayout>
+
+
+        <!-- TELEFONIDE NIMEKIRI -->
+        <ListView Grid.Row="6"
+                  x:Name="TelefonideList"
+                  HasUnevenRows="True"
+                  SelectionMode="Single"
+                  ItemTapped="Telefon_ItemTapped">
+
+            <ListView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <ViewCell>
+
+                        <Grid Padding="10"
+                              ColumnDefinitions="120,*"
+                              MinimumHeightRequest="130">
+
+                            <!-- TELEFONI PILT -->
+                            <Image Grid.Column="0"
+                                   Source="{Binding Pilt}"
+                                   WidthRequest="100"
+                                   HeightRequest="110"
+                                   Aspect="AspectFit"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+
+
+                            <!-- TELEFONI ANDMED -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                 Margin="15,0,0,0"
+                                                 Spacing="6"
+                                                 VerticalOptions="Center">
+
+                                <!-- NIMETUS -->
+                                <Label Text="{Binding Nimetus}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="Black" />
+
+                                <!-- TOOTJA -->
+                                <Label Text="{Binding Tootja}"
+                                       FontSize="15"
+                                       TextColor="Black" />
+
+                                <!-- HIND -->
+                                <Label Text="{Binding Hind, StringFormat='Hind: {0} €'}"
+                                       FontSize="17"
+                                       FontAttributes="Bold"
+                                       TextColor="Black" />
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                    </ViewCell>
+
+                </DataTemplate>
+
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+    </Grid>
+
+</ContentPage>

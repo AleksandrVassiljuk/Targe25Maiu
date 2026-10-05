@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Targe25Maiu.CarouselPage"
+             Title="Programmeerimiskeeled">
+
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#E3F2FD" Offset="0.0" />
+            <GradientStop Color="#BBDEFB" Offset="0.5" />
+            <GradientStop Color="#90CAF9" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid Padding="20"
+          RowDefinitions="Auto,Auto,*,Auto"
+          RowSpacing="15">
+
+        <!-- Pealkiri -->
+        <Label x:Name="TitleLabel"
+               Grid.Row="0"
+               Text="Programmeerimiskeeled"
+               FontSize="28"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="#1A237E" />
+
+        <!-- Keele valimine -->
+        <HorizontalStackLayout Grid.Row="1"
+                               HorizontalOptions="Center"
+                               Spacing="10">
+
+            <Label x:Name="LanguageLabel"
+                   Text="Keel:"
+                   FontSize="18"
+                   VerticalOptions="Center"
+                   TextColor="Black" />
+
+            <Picker x:Name="LanguagePicker"
+                    WidthRequest="150"
+                    SelectedIndexChanged="LanguagePicker_SelectedIndexChanged">
+
+                <Picker.Items>
+                    <x:String>Eesti</x:String>
+                    <x:String>English</x:String>
+                </Picker.Items>
+
+            </Picker>
+
+        </HorizontalStackLayout>
+
+        <!-- Carousel -->
+        <CarouselView x:Name="LanguageCarousel"
+                      Grid.Row="2"
+                      IndicatorView="LanguageIndicator"
+                      PositionChanged="LanguageCarousel_PositionChanged">
+
+            <CarouselView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border Margin="10"
+                            Padding="20"
+                            BackgroundColor="White"
+                            Stroke="#3F51B5"
+                            StrokeThickness="2">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25" />
+                        </Border.StrokeShape>
+
+                        <Border.GestureRecognizers>
+
+                            <TapGestureRecognizer
+                                Tapped="Card_Tapped" />
+
+                        </Border.GestureRecognizers>
+
+                        <VerticalStackLayout Spacing="20"
+                                             VerticalOptions="Center">
+
+                            <!-- Logo -->
+                            <Image Source="{Binding ImageUrl}"
+                                   HeightRequest="180"
+                                   WidthRequest="180"
+                                   Aspect="AspectFit"
+                                   HorizontalOptions="Center" />
+
+                            <!-- Nimi -->
+                            <Label Text="{Binding Name}"
+                                   FontSize="30"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="#1A237E" />
+
+                            <!-- Kirjeldus -->
+                            <Label Text="{Binding Description}"
+                                   FontSize="18"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="#424242" />
+
+                            <Label Text="Vajuta kaardile lisainfo saamiseks"
+                                   FontSize="13"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="Gray" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CarouselView.ItemTemplate>
+
+        </CarouselView>
+
+        <!-- Täpid -->
+        <IndicatorView x:Name="LanguageIndicator"
+                       Grid.Row="3"
+                       HorizontalOptions="Center"
+                       IndicatorColor="LightGray"
+                       SelectedIndicatorColor="#1A237E"
+                       IndicatorSize="12" />
+
+    </Grid>
+
+</ContentPage>
