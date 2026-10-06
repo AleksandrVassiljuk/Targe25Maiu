@@ -5,123 +5,254 @@
              x:Class="Targe25Maiu.CarouselPage"
              Title="Programmeerimiskeeled">
 
+    <!-- Lehe gradient taust -->
     <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#E3F2FD" Offset="0.0" />
-            <GradientStop Color="#BBDEFB" Offset="0.5" />
-            <GradientStop Color="#90CAF9" Offset="1.0" />
+
+        <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="1,1">
+
+            <GradientStop Color="#E3F2FD"
+                          Offset="0.0" />
+
+            <GradientStop Color="#BBDEFB"
+                          Offset="0.5" />
+
+            <GradientStop Color="#90CAF9"
+                          Offset="1.0" />
+
         </LinearGradientBrush>
+
     </ContentPage.Background>
 
-    <Grid Padding="20"
-          RowDefinitions="Auto,Auto,*,Auto"
-          RowSpacing="15">
 
-        <!-- Pealkiri -->
+    <Grid Padding="25"
+          RowDefinitions="Auto,Auto,*,Auto,Auto"
+          RowSpacing="18">
+
+
+        <!-- Lehe pealkiri -->
         <Label x:Name="TitleLabel"
                Grid.Row="0"
                Text="Programmeerimiskeeled"
-               FontSize="28"
+               FontSize="30"
                FontAttributes="Bold"
                HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
                TextColor="#1A237E" />
+
 
         <!-- Keele valimine -->
         <HorizontalStackLayout Grid.Row="1"
                                HorizontalOptions="Center"
-                               Spacing="10">
+                               VerticalOptions="Center"
+                               Spacing="12">
 
+
+            <!-- Valitud keele riigi lipp -->
+            <Image x:Name="CountryFlag"
+                   Source="estonia.png"
+                   WidthRequest="45"
+                   HeightRequest="30"
+                   Aspect="AspectFit"
+                   VerticalOptions="Center" />
+
+
+            <!-- Keele tekst -->
             <Label x:Name="LanguageLabel"
                    Text="Keel:"
                    FontSize="18"
+                   FontAttributes="Bold"
                    VerticalOptions="Center"
-                   TextColor="Black" />
+                   TextColor="#263238" />
 
+
+            <!-- Keele valik -->
             <Picker x:Name="LanguagePicker"
-                    WidthRequest="150"
+                    WidthRequest="160"
+                    VerticalOptions="Center"
                     SelectedIndexChanged="LanguagePicker_SelectedIndexChanged">
 
                 <Picker.Items>
+
                     <x:String>Eesti</x:String>
+
                     <x:String>English</x:String>
+
                 </Picker.Items>
 
             </Picker>
 
         </HorizontalStackLayout>
 
-        <!-- Carousel -->
-        <CarouselView x:Name="LanguageCarousel"
-                      Grid.Row="2"
-                      IndicatorView="LanguageIndicator"
-                      PositionChanged="LanguageCarousel_PositionChanged">
 
-            <CarouselView.ItemTemplate>
+        <!-- Programmeerimiskeele kaart -->
+        <Border x:Name="LanguageCard"
+                Grid.Row="2"
+                Margin="20"
+                Padding="30"
+                BackgroundColor="White"
+                Stroke="#3F51B5"
+                StrokeThickness="2">
 
-                <DataTemplate>
 
-                    <Border Margin="10"
-                            Padding="20"
-                            BackgroundColor="White"
-                            Stroke="#3F51B5"
-                            StrokeThickness="2">
+            <!-- Ümarad nurgad -->
+            <Border.StrokeShape>
 
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="25" />
-                        </Border.StrokeShape>
+                <RoundRectangle CornerRadius="30" />
 
-                        <Border.GestureRecognizers>
+            </Border.StrokeShape>
 
-                            <TapGestureRecognizer
-                                Tapped="Card_Tapped" />
 
-                        </Border.GestureRecognizers>
+            <!-- Kaardi vari -->
+            <Border.Shadow>
 
-                        <VerticalStackLayout Spacing="20"
-                                             VerticalOptions="Center">
+                <Shadow Brush="#808080"
+                        Offset="5,5"
+                        Radius="12"
+                        Opacity="0.4" />
 
-                            <!-- Logo -->
-                            <Image Source="{Binding ImageUrl}"
-                                   HeightRequest="180"
-                                   WidthRequest="180"
-                                   Aspect="AspectFit"
-                                   HorizontalOptions="Center" />
+            </Border.Shadow>
 
-                            <!-- Nimi -->
-                            <Label Text="{Binding Name}"
-                                   FontSize="30"
-                                   FontAttributes="Bold"
-                                   HorizontalTextAlignment="Center"
-                                   TextColor="#1A237E" />
 
-                            <!-- Kirjeldus -->
-                            <Label Text="{Binding Description}"
-                                   FontSize="18"
-                                   HorizontalTextAlignment="Center"
-                                   TextColor="#424242" />
+            <!-- Kaardile vajutamine -->
+            <Border.GestureRecognizers>
 
-                            <Label Text="Vajuta kaardile lisainfo saamiseks"
-                                   FontSize="13"
-                                   HorizontalTextAlignment="Center"
-                                   TextColor="Gray" />
+                <TapGestureRecognizer
+                    Tapped="Card_Tapped" />
 
-                        </VerticalStackLayout>
+            </Border.GestureRecognizers>
 
-                    </Border>
 
-                </DataTemplate>
+            <!-- Kaardi sisu -->
+            <VerticalStackLayout Spacing="16"
+                                 VerticalOptions="Center">
 
-            </CarouselView.ItemTemplate>
 
-        </CarouselView>
+                <!-- Programmeerimiskeele logo -->
+                <Image x:Name="LanguageImage"
+                       HeightRequest="150"
+                       WidthRequest="150"
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center" />
 
-        <!-- Täpid -->
-        <IndicatorView x:Name="LanguageIndicator"
-                       Grid.Row="3"
-                       HorizontalOptions="Center"
-                       IndicatorColor="LightGray"
-                       SelectedIndicatorColor="#1A237E"
-                       IndicatorSize="12" />
+
+                <!-- Programmeerimiskeele nimi -->
+                <Label x:Name="NameLabel"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       TextColor="#1A237E" />
+
+
+                <!-- Programmeerimiskeele kirjeldus -->
+                <Label x:Name="DescriptionLabel"
+                       FontSize="18"
+                       HorizontalTextAlignment="Center"
+                       TextColor="#424242" />
+
+
+                <!-- Lisainfo tekst -->
+                <Label x:Name="InfoLabel"
+                       FontSize="13"
+                       HorizontalTextAlignment="Center"
+                       TextColor="Gray" />
+
+
+                <!-- Veebilehe nupp -->
+                <Button x:Name="WebsiteButton"
+                        Text="Ava veebileht"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        HeightRequest="50"
+                        Padding="25,10"
+                        HorizontalOptions="Center"
+                        BackgroundColor="#5C6BC0"
+                        TextColor="White"
+                        CornerRadius="15"
+                        Clicked="WebsiteButton_Clicked">
+
+                    <Button.Shadow>
+
+                        <Shadow Brush="#808080"
+                                Offset="2,3"
+                                Radius="6"
+                                Opacity="0.3" />
+
+                    </Button.Shadow>
+
+                </Button>
+
+
+            </VerticalStackLayout>
+
+        </Border>
+
+
+        <!-- Näitab mitmes kaart on -->
+        <Label x:Name="PositionLabel"
+               Grid.Row="3"
+               Text="1 / 5"
+               FontSize="17"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="#1A237E" />
+
+
+        <!-- Tagasi ja Järgmine -->
+        <Grid Grid.Row="4"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="20">
+
+
+            <!-- Tagasi -->
+            <Button x:Name="PreviousButton"
+                    Grid.Column="0"
+                    Text="Tagasi"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    HeightRequest="58"
+                    BackgroundColor="#3949AB"
+                    TextColor="White"
+                    CornerRadius="20"
+                    Clicked="PreviousButton_Clicked">
+
+                <Button.Shadow>
+
+                    <Shadow Brush="#808080"
+                            Offset="3,4"
+                            Radius="8"
+                            Opacity="0.4" />
+
+                </Button.Shadow>
+
+            </Button>
+
+
+            <!-- Järgmine -->
+            <Button x:Name="NextButton"
+                    Grid.Column="1"
+                    Text="Järgmine"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    HeightRequest="58"
+                    BackgroundColor="#3949AB"
+                    TextColor="White"
+                    CornerRadius="20"
+                    Clicked="NextButton_Clicked">
+
+                <Button.Shadow>
+
+                    <Shadow Brush="#808080"
+                            Offset="3,4"
+                            Radius="8"
+                            Opacity="0.4" />
+
+                </Button.Shadow>
+
+            </Button>
+
+
+        </Grid>
 
     </Grid>
 

@@ -1,200 +1,656 @@
-using System.Globalization;
-
 namespace Targe25Maiu;
 
 public partial class CarouselPage : ContentPage
 {
+    // Programmeerimiskeelte nimekiri
     private List<ProgrammingLanguage> languages = new();
-    private bool isRunning = true;
+
+    // Praegu avatud kaardi number
+    private int currentIndex = 0;
+
+    // Vaikimisi on eesti keel
     private bool isEstonian = true;
+
+    // Kontrollib animatsiooni
+    private bool isAnimating = false;
+
 
     public CarouselPage()
     {
         InitializeComponent();
 
-        LanguagePicker.SelectedIndex = 0;
-
+        // Laeb eesti keelsed andmed
         LoadLanguages();
 
-        LanguageCarousel.ItemsSource = languages;
+        // Näitab esimest kaarti
+        ShowCurrentLanguage();
 
-        StartAutoScroll();
+        // Valib vaikimisi eesti keele
+        LanguagePicker.SelectedIndex = 0;
     }
 
+
+    // Laeb programmeerimiskeelte andmed
     private void LoadLanguages()
     {
-        languages.Clear();
+        languages = new List<ProgrammingLanguage>();
 
+
+        // EESTI KEEL
         if (isEstonian)
         {
+            // C#
             languages.Add(new ProgrammingLanguage
             {
                 Name = "C#",
-                Description = "Võimas objektorienteeritud keel",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png",
-                Details = "C# loodi Microsoftis. Hello World:\nConsole.WriteLine(\"Hello, World!\");"
+
+                Description =
+                    "Võimas objektorienteeritud programmeerimiskeel",
+
+                ImageUrl =
+                    "csharp.png",
+
+                InfoText =
+                    "Vajuta kaardile lisainfo saamiseks",
+
+                Details =
+                    "C# on Microsofti loodud programmeerimiskeel.\n\n" +
+                    "Seda kasutatakse näiteks .NET rakenduste, " +
+                    "veebirakenduste ja mängude arendamiseks.\n\n" +
+                    "Hello World:\n" +
+                    "Console.WriteLine(\"Hello, World!\");",
+
+                WebsiteUrl =
+                    "https://learn.microsoft.com/en-us/dotnet/csharp/"
             });
 
+
+            // Python
             languages.Add(new ProgrammingLanguage
             {
                 Name = "Python",
-                Description = "Suurepärane andmetöötluseks ja automatiseerimiseks",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
-                Details = "Python loodi 1991. aastal. Hello World:\nprint(\"Hello, World!\")"
+
+                Description =
+                    "Lihtne ja populaarne programmeerimiskeel",
+
+                ImageUrl =
+                    "python.png",
+
+                InfoText =
+                    "Vajuta kaardile lisainfo saamiseks",
+
+                Details =
+                    "Python loodi 1991. aastal.\n\n" +
+                    "Seda kasutatakse automatiseerimises, " +
+                    "andmetöötluses, tehisintellektis ja veebiarenduses.\n\n" +
+                    "Hello World:\n" +
+                    "print(\"Hello, World!\")",
+
+                WebsiteUrl =
+                    "https://www.python.org/"
             });
 
+
+            // JavaScript
             languages.Add(new ProgrammingLanguage
             {
                 Name = "JavaScript",
-                Description = "Veebiarenduse põhikeel",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
-                Details = "JavaScript loodi 1995. aastal. Hello World:\nconsole.log(\"Hello, World!\");"
+
+                Description =
+                    "Üks peamisi veebiarenduse programmeerimiskeeli",
+
+                ImageUrl =
+                    "javascript.png",
+
+                InfoText =
+                    "Vajuta kaardile lisainfo saamiseks",
+
+                Details =
+                    "JavaScript loodi 1995. aastal.\n\n" +
+                    "Seda kasutatakse veebilehtede interaktiivseks " +
+                    "muutmiseks ja veebirakenduste arendamiseks.\n\n" +
+                    "Hello World:\n" +
+                    "console.log(\"Hello, World!\");",
+
+                WebsiteUrl =
+                    "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
             });
 
+
+            // Java
             languages.Add(new ProgrammingLanguage
             {
                 Name = "Java",
-                Description = "Kirjuta kord, käivita igal pool",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg",
-                Details = "Java avaldati 1995. aastal. Seda kasutatakse paljude rakenduste loomisel."
+
+                Description =
+                    "Populaarne objektorienteeritud programmeerimiskeel",
+
+                ImageUrl =
+                    "java.png",
+
+                InfoText =
+                    "Vajuta kaardile lisainfo saamiseks",
+
+                Details =
+                    "Java avaldati 1995. aastal.\n\n" +
+                    "Seda kasutatakse näiteks serverirakendustes, " +
+                    "ettevõtete süsteemides ja paljudes teistes rakendustes.",
+
+                WebsiteUrl =
+                    "https://dev.java/"
             });
 
+
+            // C++
             languages.Add(new ProgrammingLanguage
             {
                 Name = "C++",
-                Description = "Suure jõudlusega süsteemikeel",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg",
-                Details = "C++ loodi 1980. aastatel. Seda kasutatakse mängude ja suure jõudlusega tarkvara arendamisel."
+
+                Description =
+                    "Kiire ja suure jõudlusega programmeerimiskeel",
+
+                ImageUrl =
+                    "cplusplus.png",
+
+                InfoText =
+                    "Vajuta kaardile lisainfo saamiseks",
+
+                Details =
+                    "C++ loodi 1980. aastatel.\n\n" +
+                    "Seda kasutatakse näiteks mängude, " +
+                    "operatsioonisüsteemide ja suure jõudlusega " +
+                    "tarkvara arendamisel.",
+
+                WebsiteUrl =
+                    "https://en.cppreference.com/"
             });
         }
+
+
+        // INGLISE KEEL
         else
         {
+            // C#
             languages.Add(new ProgrammingLanguage
             {
                 Name = "C#",
-                Description = "Powerful object-oriented language",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png",
-                Details = "C# was created by Microsoft. Hello World:\nConsole.WriteLine(\"Hello, World!\");"
+
+                Description =
+                    "Powerful object-oriented programming language",
+
+                ImageUrl =
+                    "csharp.png",
+
+                InfoText =
+                    "Tap the card for more information",
+
+                Details =
+                    "C# is a programming language created by Microsoft.\n\n" +
+                    "It is used for .NET applications, web applications " +
+                    "and game development.\n\n" +
+                    "Hello World:\n" +
+                    "Console.WriteLine(\"Hello, World!\");",
+
+                WebsiteUrl =
+                    "https://learn.microsoft.com/en-us/dotnet/csharp/"
             });
 
+
+            // Python
             languages.Add(new ProgrammingLanguage
             {
                 Name = "Python",
-                Description = "Great for data and automation",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
-                Details = "Python was created in 1991. Hello World:\nprint(\"Hello, World!\")"
+
+                Description =
+                    "Simple and popular programming language",
+
+                ImageUrl =
+                    "python.png",
+
+                InfoText =
+                    "Tap the card for more information",
+
+                Details =
+                    "Python was created in 1991.\n\n" +
+                    "It is used for automation, data processing, " +
+                    "artificial intelligence and web development.\n\n" +
+                    "Hello World:\n" +
+                    "print(\"Hello, World!\")",
+
+                WebsiteUrl =
+                    "https://www.python.org/"
             });
 
+
+            // JavaScript
             languages.Add(new ProgrammingLanguage
             {
                 Name = "JavaScript",
-                Description = "The language of the web",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
-                Details = "JavaScript was created in 1995. Hello World:\nconsole.log(\"Hello, World!\");"
+
+                Description =
+                    "One of the main languages of web development",
+
+                ImageUrl =
+                    "javascript.png",
+
+                InfoText =
+                    "Tap the card for more information",
+
+                Details =
+                    "JavaScript was created in 1995.\n\n" +
+                    "It is used to make websites interactive " +
+                    "and to create web applications.\n\n" +
+                    "Hello World:\n" +
+                    "console.log(\"Hello, World!\");",
+
+                WebsiteUrl =
+                    "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
             });
 
+
+            // Java
             languages.Add(new ProgrammingLanguage
             {
                 Name = "Java",
-                Description = "Write once, run anywhere",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg",
-                Details = "Java was released in 1995. It is used to build many different applications."
+
+                Description =
+                    "Popular object-oriented programming language",
+
+                ImageUrl =
+                    "java.png",
+
+                InfoText =
+                    "Tap the card for more information",
+
+                Details =
+                    "Java was released in 1995.\n\n" +
+                    "It is used for server applications, " +
+                    "enterprise systems and many other applications.",
+
+                WebsiteUrl =
+                    "https://dev.java/"
             });
 
+
+            // C++
             languages.Add(new ProgrammingLanguage
             {
                 Name = "C++",
-                Description = "High-performance system language",
-                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg",
-                Details = "C++ was created in the 1980s. It is commonly used for games and high-performance software."
+
+                Description =
+                    "Fast and high-performance programming language",
+
+                ImageUrl =
+                    "cplusplus.png",
+
+                InfoText =
+                    "Tap the card for more information",
+
+                Details =
+                    "C++ was created in the 1980s.\n\n" +
+                    "It is commonly used for games, operating systems " +
+                    "and high-performance software.",
+
+                WebsiteUrl =
+                    "https://en.cppreference.com/"
             });
         }
-
-        LanguageCarousel.ItemsSource = null;
-        LanguageCarousel.ItemsSource = languages;
     }
 
-    private async void StartAutoScroll()
+
+    // Näitab praegu valitud programmeerimiskeelt
+    private void ShowCurrentLanguage()
     {
-        while (isRunning)
+        if (languages.Count == 0)
         {
-            await Task.Delay(4000);
+            return;
+        }
 
-            if (!isRunning || languages.Count == 0)
-                return;
 
-            int nextPosition = LanguageCarousel.Position + 1;
+        // Võtab praeguse keele
+        ProgrammingLanguage language =
+            languages[currentIndex];
 
-            if (nextPosition >= languages.Count)
-                nextPosition = 0;
 
-            LanguageCarousel.Position = nextPosition;
+        // Muudab logo
+        LanguageImage.Source =
+            language.ImageUrl;
+
+
+        // Muudab nime
+        NameLabel.Text =
+            language.Name;
+
+
+        // Muudab kirjeldust
+        DescriptionLabel.Text =
+            language.Description;
+
+
+        // Muudab lisainfo teksti
+        InfoLabel.Text =
+            language.InfoText;
+
+
+        // Näitab kaardi numbrit
+        PositionLabel.Text =
+            $"{currentIndex + 1} / {languages.Count}";
+
+
+        // Esimesel kaardil Tagasi nupp ei tööta
+        PreviousButton.IsEnabled =
+            currentIndex > 0;
+
+
+        // Viimasel kaardil Järgmine nupp ei tööta
+        NextButton.IsEnabled =
+            currentIndex < languages.Count - 1;
+    }
+
+
+    // JÄRGMINE
+    private async void NextButton_Clicked(
+        object sender,
+        EventArgs e)
+    {
+        // Kui animatsioon töötab
+        if (isAnimating)
+        {
+            return;
+        }
+
+
+        // Kui oleme viimasel kaardil
+        if (currentIndex >= languages.Count - 1)
+        {
+            return;
+        }
+
+
+        isAnimating = true;
+
+
+        // Vana kaart kaob
+        await LanguageCard.FadeTo(
+            0,
+            120);
+
+
+        // Liigub ühe kaardi edasi
+        currentIndex++;
+
+
+        // Näitab uut kaarti
+        ShowCurrentLanguage();
+
+
+        // Uus kaart alustab natuke väiksemana
+        LanguageCard.Scale = 0.95;
+
+
+        // Uus kaart ilmub
+        await LanguageCard.FadeTo(
+            1,
+            180);
+
+
+        // Kaart kasvab normaalseks
+        await LanguageCard.ScaleTo(
+            1,
+            120);
+
+
+        isAnimating = false;
+    }
+
+
+    // TAGASI
+    private async void PreviousButton_Clicked(
+        object sender,
+        EventArgs e)
+    {
+        // Kui animatsioon töötab
+        if (isAnimating)
+        {
+            return;
+        }
+
+
+        // Kui oleme esimesel kaardil
+        if (currentIndex <= 0)
+        {
+            return;
+        }
+
+
+        isAnimating = true;
+
+
+        // Vana kaart kaob
+        await LanguageCard.FadeTo(
+            0,
+            120);
+
+
+        // Liigub ühe kaardi tagasi
+        currentIndex--;
+
+
+        // Näitab uut kaarti
+        ShowCurrentLanguage();
+
+
+        // Uus kaart alustab natuke väiksemana
+        LanguageCard.Scale = 0.95;
+
+
+        // Uus kaart ilmub
+        await LanguageCard.FadeTo(
+            1,
+            180);
+
+
+        // Kaart kasvab normaalseks
+        await LanguageCard.ScaleTo(
+            1,
+            120);
+
+
+        isAnimating = false;
+    }
+
+
+    // Kaardile vajutamine
+    private async void Card_Tapped(
+        object sender,
+        TappedEventArgs e)
+    {
+        if (languages.Count == 0)
+        {
+            return;
+        }
+
+
+        // Võtab praeguse keele
+        ProgrammingLanguage language =
+            languages[currentIndex];
+
+
+        // Näitab lisainfot
+        await DisplayAlert(
+            language.Name,
+            language.Details,
+            "OK");
+    }
+
+
+    // Veebilehe avamine
+    private async void WebsiteButton_Clicked(
+        object sender,
+        EventArgs e)
+    {
+        if (languages.Count == 0)
+        {
+            return;
+        }
+
+
+        // Võtab praeguse keele
+        ProgrammingLanguage language =
+            languages[currentIndex];
+
+
+        // Kontrollib linki
+        if (string.IsNullOrWhiteSpace(language.WebsiteUrl))
+        {
+            return;
+        }
+
+
+        try
+        {
+            // Avab lingi brauseris
+            await Launcher.Default.OpenAsync(
+                language.WebsiteUrl);
+        }
+        catch
+        {
+            if (isEstonian)
+            {
+                await DisplayAlert(
+                    "Viga",
+                    "Veebilehte ei saanud avada.",
+                    "OK");
+            }
+            else
+            {
+                await DisplayAlert(
+                    "Error",
+                    "The website could not be opened.",
+                    "OK");
+            }
         }
     }
 
-    private async void Card_Tapped(object sender, TappedEventArgs e)
-    {
-        if (sender is Border border &&
-            border.BindingContext is ProgrammingLanguage language)
-        {
-            await DisplayAlert(
-                language.Name,
-                language.Details,
-                "OK");
-        }
-    }
 
-    private void LanguagePicker_SelectedIndexChanged(object sender, EventArgs e)
+    // Keele muutmine
+    private async void LanguagePicker_SelectedIndexChanged(
+        object sender,
+        EventArgs e)
     {
+        // EESTI
         if (LanguagePicker.SelectedIndex == 0)
         {
             isEstonian = true;
 
-            TitleLabel.Text = "Programmeerimiskeeled";
-            LanguageLabel.Text = "Keel:";
+
+            // Näitab Eesti lippu
+            CountryFlag.Source =
+                "estonia.png";
+
+
+            // Muudab tekstid eesti keelde
+            TitleLabel.Text =
+                "Programmeerimiskeeled";
+
+            LanguageLabel.Text =
+                "Keel:";
+
+            WebsiteButton.Text =
+                "Ava veebileht";
+
+            PreviousButton.Text =
+                "Tagasi";
+
+            NextButton.Text =
+                "Järgmine";
         }
-        else
+
+
+        // ENGLISH
+        else if (LanguagePicker.SelectedIndex == 1)
         {
             isEstonian = false;
 
-            TitleLabel.Text = "Programming Languages";
-            LanguageLabel.Text = "Language:";
+
+            // Näitab Suurbritannia lippu
+            CountryFlag.Source =
+                "uk.png";
+
+
+            // Muudab tekstid inglise keelde
+            TitleLabel.Text =
+                "Programming Languages";
+
+            LanguageLabel.Text =
+                "Language:";
+
+            WebsiteButton.Text =
+                "Open website";
+
+            PreviousButton.Text =
+                "Previous";
+
+            NextButton.Text =
+                "Next";
         }
 
+
+        else
+        {
+            return;
+        }
+
+
+        // Kaart kaob
+        await LanguageCard.FadeTo(
+            0,
+            100);
+
+
+        // Laeb valitud keele andmed
         LoadLanguages();
 
-        LanguageCarousel.Position = 0;
-    }
 
-    private void LanguageCarousel_PositionChanged(
-        object sender,
-        PositionChangedEventArgs e)
-    {
-        // CarouselView muudab aktiivset kaarti.
-    }
+        // Läheb esimesele kaardile
+        currentIndex = 0;
 
-    protected override void OnDisappearing()
-    {
-        base.OnDisappearing();
-        isRunning = false;
-    }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
+        // Näitab esimest kaarti
+        ShowCurrentLanguage();
 
-        if (!isRunning)
-        {
-            isRunning = true;
-            StartAutoScroll();
-        }
+
+        // Kaart ilmub tagasi
+        await LanguageCard.FadeTo(
+            1,
+            180);
     }
 }
 
+
+// Programmeerimiskeele andmemudel
 public class ProgrammingLanguage
 {
+    // Nimi
     public string Name { get; set; } = "";
+
+
+    // Kirjeldus
     public string Description { get; set; } = "";
+
+
+    // Pildi failinimi
     public string ImageUrl { get; set; } = "";
+
+
+    // Juhendtekst
+    public string InfoText { get; set; } = "";
+
+
+    // Lisainfo
     public string Details { get; set; } = "";
+
+
+    // Veebilehe link
+    public string WebsiteUrl { get; set; } = "";
 }
