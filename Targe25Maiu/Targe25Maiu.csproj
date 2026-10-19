@@ -63,6 +63,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="SnakePage.xaml.cs">
+	    <DependentUpon>SnakePage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="StepperSliderPage.xaml.cs">
 	    <DependentUpon>StepperSliderPage.xaml</DependentUpon>
 	  </Compile>

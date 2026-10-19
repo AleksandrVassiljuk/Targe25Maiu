@@ -1,0 +1,412 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Targe25Maiu.SnakePage"
+    Title="Fantasy Dragon Adventure"
+    BackgroundColor="#171329">
+
+    <ScrollView
+        BackgroundColor="#171329"
+        VerticalScrollBarVisibility="Default">
+
+        <VerticalStackLayout
+            Padding="14,18"
+            Spacing="14"
+            MaximumWidthRequest="520"
+            HorizontalOptions="Center">
+
+            <!-- Mängu pealkiri -->
+            <VerticalStackLayout Spacing="4">
+
+                <Label
+                    Text="✦ THE ENCHANTED FOREST ✦"
+                    FontSize="12"
+                    FontAttributes="Bold"
+                    TextColor="#D5B76B"
+                    HorizontalTextAlignment="Center"/>
+
+                <Label
+                    Text="🐉 FANTASY DRAGON"
+                    FontSize="27"
+                    FontAttributes="Bold"
+                    TextColor="#FFE3A1"
+                    HorizontalTextAlignment="Center"/>
+
+                <Label
+                    Text="⚔️ ADVENTURE ⚔️"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    TextColor="#C5A0F7"
+                    HorizontalTextAlignment="Center"/>
+
+            </VerticalStackLayout>
+
+            <!-- Punktid, rekord ja kristallid -->
+            <Border
+                BackgroundColor="#29213F"
+                Stroke="#B28B4C"
+                StrokeThickness="2"
+                StrokeShape="RoundRectangle 18"
+                Padding="12">
+
+                <Grid
+                    ColumnDefinitions="*,*,*"
+                    ColumnSpacing="8">
+
+                    <VerticalStackLayout
+                        Grid.Column="0"
+                        Spacing="5">
+
+                        <Label
+                            Text="💎 PUNKTID"
+                            FontSize="11"
+                            TextColor="#D6C5E9"
+                            HorizontalTextAlignment="Center"/>
+
+                        <Label
+                            x:Name="ScoreLabel"
+                            Text="0"
+                            FontSize="25"
+                            FontAttributes="Bold"
+                            TextColor="#70E5FF"
+                            HorizontalTextAlignment="Center"/>
+
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Spacing="5">
+
+                        <Label
+                            Text="👑 REKORD"
+                            FontSize="11"
+                            TextColor="#D6C5E9"
+                            HorizontalTextAlignment="Center"/>
+
+                        <Label
+                            x:Name="BestLabel"
+                            Text="0"
+                            FontSize="25"
+                            FontAttributes="Bold"
+                            TextColor="#FFD166"
+                            HorizontalTextAlignment="Center"/>
+
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout
+                        Grid.Column="2"
+                        Spacing="5">
+
+                        <Label
+                            Text="🔮 KRISTALLID"
+                            FontSize="11"
+                            TextColor="#D6C5E9"
+                            HorizontalTextAlignment="Center"/>
+
+                        <Label
+                            x:Name="BerriesLabel"
+                            Text="0"
+                            FontSize="25"
+                            FontAttributes="Bold"
+                            TextColor="#E9A5FF"
+                            HorizontalTextAlignment="Center"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+            </Border>
+
+            <!-- Mänguväljaku pealkiri -->
+            <Grid ColumnDefinitions="*,Auto">
+
+                <Label
+                    Text="🌲 MAAGILINE METS"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    TextColor="#FFE3A1"
+                    VerticalOptions="Center"/>
+
+                <Label
+                    Grid.Column="1"
+                    Text="✦ +100 / +200 ✦"
+                    FontSize="12"
+                    TextColor="#BFA6E7"
+                    VerticalOptions="Center"/>
+
+            </Grid>
+
+            <!-- Mänguväljak -->
+            <Border
+                x:Name="BoardBorder"
+                BackgroundColor="#261E3D"
+                Stroke="#B28B4C"
+                StrokeThickness="4"
+                StrokeShape="RoundRectangle 20"
+                Padding="6"
+                HorizontalOptions="Fill">
+
+                <Grid
+                    HeightRequest="340"
+                    MinimumWidthRequest="280">
+
+                    <GraphicsView
+                        x:Name="GameCanvas"
+                        BackgroundColor="#243F3B"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"/>
+
+                    <!-- Punktide animatsioon -->
+                    <Label
+                        x:Name="PointsPopup"
+                        Text="+100"
+                        FontSize="36"
+                        FontAttributes="Bold"
+                        TextColor="#FFE08A"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        IsVisible="False"
+                        InputTransparent="True"/>
+
+                </Grid>
+
+            </Border>
+
+            <!-- Mängu olek -->
+            <Label
+                x:Name="StatusLabel"
+                Text="🐉 Juhi draakon maagiliste kristallideni!"
+                FontSize="13"
+                FontAttributes="Bold"
+                TextColor="#E9D5FF"
+                HorizontalTextAlignment="Center"/>
+
+            <!-- Aardekirstu boonus -->
+            <Border
+                BackgroundColor="#29213F"
+                Stroke="#71558F"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="14">
+
+                <VerticalStackLayout Spacing="9">
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <Label
+                            Text="🎁 AARDEKIRST"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            TextColor="#FFD166"/>
+
+                        <Label
+                            x:Name="BonusLabel"
+                            Grid.Column="1"
+                            Text="0 / 5"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            TextColor="#FFD166"/>
+
+                    </Grid>
+
+                    <ProgressBar
+                        x:Name="BonusProgress"
+                        Progress="0"
+                        ProgressColor="#F6C65B"
+                        BackgroundColor="#514366"
+                        HeightRequest="10"/>
+
+                    <Label
+                        x:Name="BonusInfoLabel"
+                        Text="💎 Kogu 5 kristalli ja ava kaks aaret!"
+                        FontSize="12"
+                        TextColor="#D6C5E9"/>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Draakoni juhtimine -->
+            <Label
+                Text="⚔️ JUHI DRAAKONIT"
+                FontSize="14"
+                FontAttributes="Bold"
+                TextColor="#FFE3A1"
+                HorizontalTextAlignment="Center"/>
+
+            <VerticalStackLayout
+                HorizontalOptions="Center"
+                Spacing="8">
+
+                <Button
+                    Text="▲"
+                    WidthRequest="78"
+                    HeightRequest="55"
+                    FontSize="25"
+                    BackgroundColor="#594078"
+                    BorderColor="#B795DD"
+                    BorderWidth="2"
+                    TextColor="White"
+                    CornerRadius="18"
+                    Clicked="UpButton_Clicked"/>
+
+                <HorizontalStackLayout Spacing="10">
+
+                    <Button
+                        Text="◀"
+                        WidthRequest="78"
+                        HeightRequest="55"
+                        FontSize="25"
+                        BackgroundColor="#594078"
+                        BorderColor="#B795DD"
+                        BorderWidth="2"
+                        TextColor="White"
+                        CornerRadius="18"
+                        Clicked="LeftButton_Clicked"/>
+
+                    <Button
+                        Text="▼"
+                        WidthRequest="78"
+                        HeightRequest="55"
+                        FontSize="25"
+                        BackgroundColor="#594078"
+                        BorderColor="#B795DD"
+                        BorderWidth="2"
+                        TextColor="White"
+                        CornerRadius="18"
+                        Clicked="DownButton_Clicked"/>
+
+                    <Button
+                        Text="▶"
+                        WidthRequest="78"
+                        HeightRequest="55"
+                        FontSize="25"
+                        BackgroundColor="#594078"
+                        BorderColor="#B795DD"
+                        BorderWidth="2"
+                        TextColor="White"
+                        CornerRadius="18"
+                        Clicked="RightButton_Clicked"/>
+
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+
+            <!-- Uus mäng ja paus -->
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10">
+
+                <Button
+                    x:Name="NewGameButton"
+                    Grid.Column="0"
+                    Text="⚔️ Uus seiklus"
+                    HeightRequest="55"
+                    FontAttributes="Bold"
+                    BackgroundColor="#A67835"
+                    BorderColor="#F4D28C"
+                    BorderWidth="2"
+                    TextColor="White"
+                    CornerRadius="16"
+                    Clicked="NewGameButton_Clicked"/>
+
+                <Button
+                    x:Name="PauseButton"
+                    Grid.Column="1"
+                    Text="⏸ Paus"
+                    HeightRequest="55"
+                    FontAttributes="Bold"
+                    BackgroundColor="#493663"
+                    BorderColor="#A58AC9"
+                    BorderWidth="2"
+                    TextColor="White"
+                    CornerRadius="16"
+                    Clicked="PauseButton_Clicked"/>
+
+            </Grid>
+
+            <!-- Seaded -->
+            <Border
+                BackgroundColor="#29213F"
+                Stroke="#71558F"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="14"
+                Margin="0,5,0,10">
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="⚙️ MAAGILISED SEADED"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        TextColor="#FFD166"/>
+
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="12">
+
+                        <VerticalStackLayout
+                            Grid.Column="0"
+                            Spacing="5">
+
+                            <Label
+                                x:Name="ThemeTitleLabel"
+                                Text="🌌 Maailm"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                TextColor="#E9D5FF"/>
+
+                            <Picker
+                                x:Name="ThemePicker"
+                                Title="Vali maailm"
+                                BackgroundColor="#3B3054"
+                                TextColor="White"
+                                SelectedIndexChanged="ThemePicker_SelectedIndexChanged">
+
+                                <Picker.Items>
+                                    <x:String>🌿 Grass</x:String>
+                                    <x:String>🌙 Night</x:String>
+                                    <x:String>🌈 Candy</x:String>
+                                </Picker.Items>
+
+                            </Picker>
+
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Spacing="5">
+
+                            <Label
+                                x:Name="SpeedTitleLabel"
+                                Text="⚡ Raskus"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                TextColor="#E9D5FF"/>
+
+                            <Picker
+                                x:Name="SpeedPicker"
+                                Title="Vali raskus"
+                                BackgroundColor="#3B3054"
+                                TextColor="White"
+                                SelectedIndexChanged="SpeedPicker_SelectedIndexChanged">
+
+                                <Picker.Items>
+                                    <x:String>Easy</x:String>
+                                    <x:String>Normal</x:String>
+                                    <x:String>Hard</x:String>
+                                </Picker.Items>
+
+                            </Picker>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

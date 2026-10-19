@@ -1,3 +1,4 @@
+﻿
 namespace Targe25Maiu;
 
 public partial class StartPage : ContentPage
@@ -17,7 +18,8 @@ public partial class StartPage : ContentPage
         new TicTacToePage(),
         new FriendsPage(),
         new ListViewPage(),
-        new CarouselPage()
+        new CarouselPage(),
+        new SnakePage()
     };
 
     public List<string> LeheNimed = new List<string>()
@@ -32,7 +34,8 @@ public partial class StartPage : ContentPage
         "Trips-Traps-Trull",
         "Kontaktandmed",
         "Telefonid",
-        "Carousel"
+        "Carousel",
+        "🐍 Cartoon Snake"
     };
 
     public StartPage()
