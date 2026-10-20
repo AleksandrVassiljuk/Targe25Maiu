@@ -5,220 +5,372 @@ using System.Linq;
 
 namespace Targe25Maiu.SnakeGame
 {
+    // Mängu maailmad
+    public enum DragonWorld
+    {
+        Forest,
+        Night,
+        Candy
+    }
+
+    // Raskusastmed
+    public enum DragonDifficulty
+    {
+        Easy,
+        Normal,
+        Hard
+    }
+
+    // Ühe ruudu koordinaadid
+    public readonly record struct SnakePoint(int X, int Y);
+
     public class SnakeGameLogic
     {
         private readonly Random random = new Random();
 
-        public Snake Snake { get; private set; }
-        public Food Food { get; private set; }
+        // Mänguväljak
+        public int Width => 15;
+        public int Height => 15;
 
-        public int Width { get; } = 15;
-        public int Height { get; } = 15;
+        // Draakon
+        public Snake Snake { get; } = new Snake();
 
+        // Tavaline kristall
+        public SnakePoint Food { get; private set; }
+
+        // Boonuskristallid
+        public List<SnakePoint> BonusBerries { get; } =
+            new List<SnakePoint>();
+
+        // Kivid
+        public List<SnakePoint> Rocks { get; } =
+            new List<SnakePoint>();
+
+        // Punktid
         public int Score { get; private set; }
+
         public int BerriesCollected { get; private set; }
+
+        public int BonusesCollected { get; private set; }
+
         public int BonusProgress => BerriesCollected % 5;
 
-        public int LastPoints { get; private set; }
-        public int EatSequence { get; private set; }
+        // Mängu olek
+        public bool IsPaused { get; private set; }
 
         public bool IsGameOver { get; private set; }
-        public bool IsPaused { get; private set; }
+
         public bool IsWon { get; private set; }
 
-        // Kaks boonusmarja
-        public List<(int X, int Y)> BonusBerries { get; }
-            = new List<(int X, int Y)>();
+        // Raskusaste
+        public DragonDifficulty Difficulty { get; private set; }
+            = DragonDifficulty.Normal;
 
         public SnakeGameLogic()
         {
-            Snake = new Snake();
-            Food = new Food();
-
             Start();
         }
 
-        // Uue mängu alustamine
+        // UUS MÄNG
         public void Start()
         {
-            Snake = new Snake();
-            Food = new Food();
-
             Score = 0;
             BerriesCollected = 0;
-            LastPoints = 0;
-            EatSequence = 0;
+            BonusesCollected = 0;
 
-            IsGameOver = false;
             IsPaused = false;
+            IsGameOver = false;
             IsWon = false;
 
-            BonusBerries.Clear();
+            Snake.Reset();
 
+            BonusBerries.Clear();
+            Rocks.Clear();
+
+            Food = new SnakePoint(-1, -1);
+
+            GenerateRocks();
             GenerateFood();
         }
 
-        // Mängu peatamine
+        // RASKUSASTE
+        public void SetDifficulty(DragonDifficulty selected)
+        {
+            Difficulty = selected;
+        }
+
+        // PAUS
         public void Pause()
         {
             if (!IsGameOver)
+            {
                 IsPaused = true;
+            }
         }
 
-        // Mängu jätkamine
+        // JÄTKA
         public void Resume()
         {
             if (!IsGameOver)
+            {
                 IsPaused = false;
+            }
         }
 
-        // Ussi liikumissuund
-        public void ChangeDirection(int x, int y)
+        // SUUNA MUUTMINE
+        public void ChangeDirection(int dx, int dy)
         {
-            if (IsGameOver || IsPaused)
+            if (IsPaused || IsGameOver)
                 return;
 
-            Snake.ChangeDirection(x, y);
+            Snake.ChangeDirection(dx, dy);
         }
 
-        // Tavalise marja loomine
-        private bool GenerateFood()
+        // MÄNGU ÜKS SAMM
+        public int Update()
         {
-            var blocked = Snake.Body
-                .Concat(BonusBerries)
-                .ToList();
+            if (IsPaused || IsGameOver)
+                return 0;
 
-            return Food.Generate(
-                Width,
-                Height,
-                blocked
-            );
+            Snake.ApplyDirection();
+
+            SnakePoint head = Snake.Body[0];
+
+            SnakePoint next = new SnakePoint(
+                head.X + Snake.DirectionX,
+                head.Y + Snake.DirectionY);
+
+            // Seinaga kokkupõrge
+            if (next.X < 0 ||
+                next.X >= Width ||
+                next.Y < 0 ||
+                next.Y >= Height)
+            {
+                EndGame();
+                return 0;
+            }
+
+            // Kiviga kokkupõrge
+            if (Rocks.Contains(next))
+            {
+                EndGame();
+                return 0;
+            }
+
+            bool normalCrystal = next == Food;
+
+            bool bonusCrystal =
+                BonusBerries.Contains(next);
+
+            bool growing =
+                normalCrystal || bonusCrystal;
+
+            // Kontrollime kokkupõrget oma kehaga
+            int bodyCount = growing
+                ? Snake.Body.Count
+                : Snake.Body.Count - 1;
+
+            for (int i = 0; i < bodyCount; i++)
+            {
+                if (Snake.Body[i] == next)
+                {
+                    EndGame();
+                    return 0;
+                }
+            }
+
+            // Liigutame draakonit
+            Snake.Body.Insert(0, next);
+
+            if (!growing)
+            {
+                Snake.Body.RemoveAt(
+                    Snake.Body.Count - 1);
+            }
+
+            int gainedPoints = 0;
+
+            // TAVALINE KRISTALL +100
+            if (normalCrystal)
+            {
+                Score += 100;
+                gainedPoints += 100;
+
+                BerriesCollected++;
+
+                // Eemaldame vana kristalli
+                Food = new SnakePoint(-1, -1);
+
+                // Loome esmalt uue tavalise kristalli
+                GenerateFood();
+
+                // Iga viie kristalli järel kaks boonust
+                if (!IsGameOver &&
+                    BerriesCollected % 5 == 0)
+                {
+                    GenerateBonus();
+                    GenerateBonus();
+                }
+
+                UpdateRocks();
+            }
+
+            // BOONUSKRISTALL +200
+            if (bonusCrystal)
+            {
+                BonusBerries.Remove(next);
+
+                Score += 200;
+                gainedPoints += 200;
+
+                BonusesCollected++;
+
+                UpdateRocks();
+            }
+
+            // Võit, kui kõik mängitavad ruudud
+            // on draakoni kehaga täidetud
+            int availableCells =
+                Width * Height - Rocks.Count;
+
+            if (Snake.Body.Count >= availableCells)
+            {
+                IsWon = true;
+                IsGameOver = true;
+            }
+
+            return gainedPoints;
         }
 
-        // Kahe boonusmarja loomine
-        private void GenerateBonusBerries()
+        // MÄNG LÄBI
+        private void EndGame()
         {
-            BonusBerries.Clear();
+            IsGameOver = true;
+            IsPaused = false;
+        }
 
-            List<(int X, int Y)> freeCells =
-                new List<(int X, int Y)>();
+        // KIVIDE ALGARV
+        private int GetStartingRocks()
+        {
+            switch (Difficulty)
+            {
+                case DragonDifficulty.Easy:
+                    return 0;
+
+                case DragonDifficulty.Normal:
+                    return 2;
+
+                case DragonDifficulty.Hard:
+                    return 4;
+
+                default:
+                    return 2;
+            }
+        }
+
+        // ALGSETE KIVIDE LOOMINE
+        private void GenerateRocks()
+        {
+            Rocks.Clear();
+
+            int count = GetStartingRocks();
+
+            for (int i = 0; i < count; i++)
+            {
+                if (!TryFindFreePoint(out SnakePoint point))
+                    break;
+
+                Rocks.Add(point);
+            }
+        }
+
+        // IGA 1000 PUNKTI JÄREL +2 KIVI
+        private void UpdateRocks()
+        {
+            int extraRocks = (Score / 1000) * 2;
+
+            int targetCount = Math.Min(
+                30,
+                GetStartingRocks() + extraRocks);
+
+            while (Rocks.Count < targetCount)
+            {
+                if (!TryFindFreePoint(out SnakePoint point))
+                    break;
+
+                Rocks.Add(point);
+            }
+        }
+
+        // UUS TAVALINE KRISTALL
+        private void GenerateFood()
+        {
+            Food = new SnakePoint(-1, -1);
+
+            if (TryFindFreePoint(out SnakePoint point))
+            {
+                Food = point;
+            }
+            else
+            {
+                // Kui boonused on veel alles,
+                // saab draakon neid edasi koguda
+                if (BonusBerries.Count == 0)
+                {
+                    IsWon = true;
+                    IsGameOver = true;
+                }
+            }
+        }
+
+        // BOONUSKRISTALL
+        private void GenerateBonus()
+        {
+            if (TryFindFreePoint(out SnakePoint point))
+            {
+                BonusBerries.Add(point);
+            }
+        }
+
+        // VABA RUUDU LEIDMINE
+        private bool TryFindFreePoint(out SnakePoint point)
+        {
+            List<SnakePoint> available =
+                new List<SnakePoint>();
 
             for (int y = 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
                 {
-                    var position = (X: x, Y: y);
+                    SnakePoint candidate =
+                        new SnakePoint(x, y);
 
-                    // Ei teki ussi keha sisse
-                    if (Snake.Body.Contains(position))
+                    if (Snake.Body.Contains(candidate))
                         continue;
 
-                    // Ei teki tavalise marja peale
-                    if (position == (Food.X, Food.Y))
+                    if (Rocks.Contains(candidate))
                         continue;
 
-                    freeCells.Add(position);
+                    if (BonusBerries.Contains(candidate))
+                        continue;
+
+                    if (candidate == Food)
+                        continue;
+
+                    available.Add(candidate);
                 }
             }
 
-            // Loome kaks boonusmarja
-            for (int i = 0; i < 2 && freeCells.Count > 0; i++)
+            if (available.Count == 0)
             {
-                int index = random.Next(freeCells.Count);
-
-                BonusBerries.Add(freeCells[index]);
-
-                freeCells.RemoveAt(index);
-            }
-        }
-
-        // Üks mängusamm
-        // Tagastab söödud marja punktid
-        public int Update()
-        {
-            LastPoints = 0;
-
-            if (IsGameOver || IsPaused)
-                return 0;
-
-            var head = Snake.Body[0];
-
-            int nextX = head.X + Snake.DirectionX;
-            int nextY = head.Y + Snake.DirectionY;
-
-            // Seina kontroll
-            if (nextX < 0 || nextX >= Width ||
-                nextY < 0 || nextY >= Height)
-            {
-                IsGameOver = true;
-                return 0;
+                point = default;
+                return false;
             }
 
-            var nextPosition = (X: nextX, Y: nextY);
+            point = available[
+                random.Next(available.Count)];
 
-            // Tavalise marja kontroll
-            bool normalBerry =
-                nextX == Food.X &&
-                nextY == Food.Y;
-
-            // Boonusmarja kontroll
-            bool bonusBerry =
-                BonusBerries.Contains(nextPosition);
-
-            bool eating = normalBerry || bonusBerry;
-
-            // Kontrollime kokkupõrget enda kehaga
-            int bodyCount = eating
-                ? Snake.Body.Count
-                : Snake.Body.Count - 1;
-
-            if (Snake.Body
-                .Take(bodyCount)
-                .Contains(nextPosition))
-            {
-                IsGameOver = true;
-                return 0;
-            }
-
-            // Liigutame ussi
-            Snake.Move(eating);
-
-            // Tavaline mari
-            if (normalBerry)
-            {
-                LastPoints = 100;
-                BerriesCollected++;
-
-                bool hasSpace = GenerateFood();
-
-                if (!hasSpace)
-                {
-                    IsWon = true;
-                    IsGameOver = true;
-                }
-
-                // Iga 5 marja järel kaks boonusmarja
-                if (BerriesCollected % 5 == 0 && !IsGameOver)
-                {
-                    GenerateBonusBerries();
-                }
-            }
-            // Boonusmari
-            else if (bonusBerry)
-            {
-                LastPoints = 200;
-
-                BonusBerries.Remove(nextPosition);
-            }
-
-            // Punktide lisamine
-            if (LastPoints > 0)
-            {
-                Score += LastPoints;
-                EatSequence++;
-            }
-
-            return LastPoints;
+            return true;
         }
     }
 }

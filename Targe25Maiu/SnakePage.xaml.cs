@@ -1,7 +1,9 @@
 ﻿
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Dispatching;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Storage;
 using Targe25Maiu.SnakeGame;
@@ -11,30 +13,38 @@ namespace Targe25Maiu
     public partial class SnakePage : ContentPage
     {
         private readonly SnakeGameLogic game;
-        private SnakeTheme currentTheme;
-
         private readonly IDispatcherTimer gameTimer;
-        private readonly SnakeBoardDrawable boardDrawable;
+        private readonly DragonBoardDrawable board;
+        private readonly Random random = new Random();
 
+        private DragonWorld world = DragonWorld.Forest;
+        private DragonDifficulty difficulty = DragonDifficulty.Normal;
+
+        private readonly List<DragonQuest> quests =
+            new List<DragonQuest>();
+
+        private readonly int[] worldCrystals = new int[3];
+
+        private int hardCrystals;
+        private int fastCrystals;
         private int bestScore;
-        private bool gameOverShown;
-        private int popupVersion;
+
         private bool pageVisible;
+        private bool gameOverShown;
 
         public SnakePage()
         {
             InitializeComponent();
 
             game = new SnakeGameLogic();
-            currentTheme = SnakeTheme.Grass();
 
-            boardDrawable = new SnakeBoardDrawable
+            board = new DragonBoardDrawable
             {
                 Game = game,
-                Theme = currentTheme
+                World = world
             };
 
-            GameCanvas.Drawable = boardDrawable;
+            GameCanvas.Drawable = board;
 
             gameTimer = Dispatcher.CreateTimer();
             gameTimer.Interval = TimeSpan.FromMilliseconds(200);
@@ -43,34 +53,27 @@ namespace Targe25Maiu
             bestScore = Preferences.Default.Get(
                 "DragonSnakeBestScore", 0);
 
-            ThemePicker.SelectedIndex = 0;
-            SpeedPicker.SelectedIndex = 1;
+            SelectWorld(DragonWorld.Forest);
+            SelectDifficulty(DragonDifficulty.Normal);
 
-            ApplyTheme();
+            GenerateQuests();
             UpdateStats();
-
-            StatusLabel.Text =
-                "🐉 Juhi draakon maagiliste kristallideni!";
 
             GameCanvas.Invalidate();
         }
 
-        // Käivitame mängu siis, kui leht avaneb
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
             pageVisible = true;
 
-            GameCanvas.Invalidate();
-
-            if (!game.IsGameOver && !game.IsPaused)
+            if (!game.IsPaused && !game.IsGameOver)
             {
                 gameTimer.Start();
             }
         }
 
-        // Peatame mängu lehelt lahkudes
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
@@ -78,22 +81,489 @@ namespace Targe25Maiu
             pageVisible = false;
             gameTimer.Stop();
 
-            popupVersion++;
-            PointsPopup.CancelAnimations();
             PointsPopup.IsVisible = false;
 
             if (!game.IsGameOver)
             {
                 game.Pause();
-
                 PauseButton.Text = "▶ Jätka";
-                StatusLabel.Text = "⏸ Mäng on pausil";
             }
         }
 
-        // Mängu liikumine
-        private async void GameTimer_Tick(
-            object? sender, EventArgs e)
+        // MENÜÜ
+        private void MenuButton_Clicked(
+            object sender, EventArgs e)
+        {
+            SettingsPanel.IsVisible =
+                !SettingsPanel.IsVisible;
+
+            MenuButton.Text =
+                SettingsPanel.IsVisible ? "✕" : "☰";
+        }
+
+        // MAAILMADE VALIMINE
+        private void ForestCard_Tapped(
+            object sender, TappedEventArgs e)
+        {
+            SelectWorld(DragonWorld.Forest);
+        }
+
+        private void NightCard_Tapped(
+            object sender, TappedEventArgs e)
+        {
+            SelectWorld(DragonWorld.Night);
+        }
+
+        private void CandyCard_Tapped(
+            object sender, TappedEventArgs e)
+        {
+            SelectWorld(DragonWorld.Candy);
+        }
+
+        // RASKUSASTMETE VALIMINE
+        private void EasyCard_Tapped(
+            object sender, TappedEventArgs e)
+        {
+            SelectDifficulty(DragonDifficulty.Easy);
+        }
+
+        private void NormalCard_Tapped(
+            object sender, TappedEventArgs e)
+        {
+            SelectDifficulty(DragonDifficulty.Normal);
+        }
+
+        private void HardCard_Tapped(
+            object sender, TappedEventArgs e)
+        {
+            SelectDifficulty(DragonDifficulty.Hard);
+        }
+
+        private void SelectWorld(DragonWorld selected)
+        {
+            world = selected;
+            board.World = selected;
+
+            StyleCard(
+                ForestCard,
+                selected == DragonWorld.Forest,
+                "#225D42",
+                "#70E8A2");
+
+            StyleCard(
+                NightCard,
+                selected == DragonWorld.Night,
+                "#343D79",
+                "#9CA9FF");
+
+            StyleCard(
+                CandyCard,
+                selected == DragonWorld.Candy,
+                "#793B70",
+                "#FFA1E5");
+
+            ForestSelected.IsVisible =
+                selected == DragonWorld.Forest;
+
+            NightSelected.IsVisible =
+                selected == DragonWorld.Night;
+
+            CandySelected.IsVisible =
+                selected == DragonWorld.Candy;
+
+            switch (selected)
+            {
+                case DragonWorld.Forest:
+                    WorldDescriptionLabel.Text =
+                        "🌲 Maagiline roheline mets.";
+                    break;
+
+                case DragonWorld.Night:
+                    WorldDescriptionLabel.Text =
+                        "🌙 Maagiline öö ja kristallid.";
+                    break;
+
+                case DragonWorld.Candy:
+                    WorldDescriptionLabel.Text =
+                        "🍬 Värviline kommimaa.";
+                    break;
+            }
+
+            GameCanvas.Invalidate();
+        }
+
+        private void SelectDifficulty(
+            DragonDifficulty selected)
+        {
+            difficulty = selected;
+
+            game.SetDifficulty(selected);
+
+            StyleCard(
+                EasyCard,
+                selected == DragonDifficulty.Easy,
+                "#423457",
+                "#4ADE80");
+
+            StyleCard(
+                NormalCard,
+                selected == DragonDifficulty.Normal,
+                "#423457",
+                "#FACC15");
+
+            StyleCard(
+                HardCard,
+                selected == DragonDifficulty.Hard,
+                "#423457",
+                "#FB7185");
+
+            EasySelected.IsVisible =
+                selected == DragonDifficulty.Easy;
+
+            NormalSelected.IsVisible =
+                selected == DragonDifficulty.Normal;
+
+            HardSelected.IsVisible =
+                selected == DragonDifficulty.Hard;
+
+            bool wasRunning = gameTimer.IsRunning;
+
+            gameTimer.Stop();
+
+            switch (selected)
+            {
+                case DragonDifficulty.Easy:
+                    gameTimer.Interval =
+                        TimeSpan.FromMilliseconds(300);
+                    break;
+
+                case DragonDifficulty.Normal:
+                    gameTimer.Interval =
+                        TimeSpan.FromMilliseconds(200);
+                    break;
+
+                case DragonDifficulty.Hard:
+                    gameTimer.Interval =
+                        TimeSpan.FromMilliseconds(110);
+                    break;
+            }
+
+            if (wasRunning &&
+                !game.IsPaused &&
+                !game.IsGameOver)
+            {
+                gameTimer.Start();
+            }
+        }
+
+        private void StyleCard(
+            Border card,
+            bool selected,
+            string background,
+            string stroke)
+        {
+            card.BackgroundColor = Color.FromArgb(
+                selected ? background : "#322744");
+
+            card.Stroke = new SolidColorBrush(
+                Color.FromArgb(
+                    selected ? stroke : "#65547F"));
+
+            card.StrokeThickness = selected ? 2 : 1;
+        }
+
+        // QUESTIDE LOOMINE
+        private void GenerateQuests()
+        {
+            quests.Clear();
+            QuestListLayout.Children.Clear();
+
+            Array.Clear(
+                worldCrystals,
+                0,
+                worldCrystals.Length);
+
+            hardCrystals = 0;
+            fastCrystals = 0;
+
+            List<DragonQuest> pool = new List<DragonQuest>
+            {
+                new DragonQuest(
+                    "💎", "First Crystal",
+                    "Kogu 1 kristall",
+                    QuestKind.Crystals, 1),
+
+                new DragonQuest(
+                    "🐉", "Crystal Hunter",
+                    "Kogu 5 kristalli",
+                    QuestKind.Crystals, 5),
+
+                new DragonQuest(
+                    "👑", "Crystal Master",
+                    "Kogu 12 kristalli",
+                    QuestKind.Crystals, 12),
+
+                new DragonQuest(
+                    "⭐", "Rising Dragon",
+                    "Saavuta 1000 punkti",
+                    QuestKind.Score, 1000),
+
+                new DragonQuest(
+                    "🏆", "Dragon Legend",
+                    "Saavuta 3000 punkti",
+                    QuestKind.Score, 3000),
+
+                new DragonQuest(
+                    "🎁", "Bonus Hunter",
+                    "Korja 2 boonuskristalli",
+                    QuestKind.Bonuses, 2),
+
+                new DragonQuest(
+                    "🌲", "Forest Guardian",
+                    "Kogu metsamaailmas 5 kristalli",
+                    QuestKind.Forest, 5),
+
+                new DragonQuest(
+                    "🌙", "Night Explorer",
+                    "Kogu öömaailmas 5 kristalli",
+                    QuestKind.Night, 5),
+
+                new DragonQuest(
+                    "🍬", "Candy Explorer",
+                    "Kogu kommimaal 5 kristalli",
+                    QuestKind.Candy, 5),
+
+                new DragonQuest(
+                    "🔥", "Hard Challenge",
+                    "Kogu Hard-raskusega 4 kristalli",
+                    QuestKind.Hard, 4),
+
+                new DragonQuest(
+                    "⚡", "Speed Master",
+                    "Kogu Normal või Hard raskusega 8 kristalli",
+                    QuestKind.Fast, 8),
+
+                new DragonQuest(
+                    "✨", "Treasure Seeker",
+                    "Saavuta 2000 punkti",
+                    QuestKind.Score, 2000)
+            };
+
+            // Segame questid juhuslikult.
+            for (int i = pool.Count - 1; i > 0; i--)
+            {
+                int j = random.Next(i + 1);
+
+                DragonQuest temp = pool[i];
+                pool[i] = pool[j];
+                pool[j] = temp;
+            }
+
+            // Valime viis questi.
+            foreach (DragonQuest quest in pool.Take(5))
+            {
+                CreateQuestCard(quest);
+                quests.Add(quest);
+            }
+
+            UpdateQuests();
+        }
+
+        // QUESTI KAART
+        private void CreateQuestCard(DragonQuest quest)
+        {
+            quest.TitleLabel = new Label
+            {
+                Text = quest.Icon + " " + quest.Title,
+                FontSize = 14,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Colors.White,
+                LineBreakMode = LineBreakMode.WordWrap
+            };
+
+            quest.StateLabel = new Label
+            {
+                Text = "IN PROGRESS",
+                FontSize = 10,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.FromArgb("#D8C4F0"),
+                HorizontalTextAlignment = TextAlignment.End,
+                VerticalTextAlignment = TextAlignment.Center
+            };
+
+            quest.ProgressLabel = new Label
+            {
+                Text = "0 / " + quest.Target,
+                FontSize = 12,
+                TextColor = Color.FromArgb("#D8C4F0")
+            };
+
+            quest.ProgressBar = new ProgressBar
+            {
+                Progress = 0,
+                ProgressColor = Color.FromArgb("#F6C65B"),
+                BackgroundColor = Color.FromArgb("#514366"),
+                HorizontalOptions = LayoutOptions.Fill
+            };
+
+            Grid heading = new Grid
+            {
+                ColumnSpacing = 10
+            };
+
+            heading.ColumnDefinitions.Add(
+                new ColumnDefinition
+                {
+                    Width = GridLength.Star
+                });
+
+            heading.ColumnDefinitions.Add(
+                new ColumnDefinition
+                {
+                    Width = new GridLength(125)
+                });
+
+            heading.Children.Add(quest.TitleLabel);
+            Grid.SetColumn(quest.TitleLabel, 0);
+
+            heading.Children.Add(quest.StateLabel);
+            Grid.SetColumn(quest.StateLabel, 1);
+
+            Label description = new Label
+            {
+                Text = quest.Description,
+                FontSize = 12,
+                TextColor = Color.FromArgb("#D8C4F0"),
+                LineBreakMode = LineBreakMode.WordWrap
+            };
+
+            VerticalStackLayout content =
+                new VerticalStackLayout
+                {
+                    Spacing = 9,
+                    HorizontalOptions = LayoutOptions.Fill
+                };
+
+            content.Children.Add(heading);
+            content.Children.Add(description);
+            content.Children.Add(quest.ProgressBar);
+            content.Children.Add(quest.ProgressLabel);
+
+            quest.Card = new Border
+            {
+                BackgroundColor =
+                    Color.FromArgb("#322744"),
+
+                Stroke = new SolidColorBrush(
+                    Color.FromArgb("#65547F")),
+
+                StrokeThickness = 1,
+
+                StrokeShape =
+                    new Microsoft.Maui.Controls.Shapes.RoundRectangle
+                    {
+                        CornerRadius = new CornerRadius(12)
+                    },
+
+                Padding = new Thickness(14),
+
+                HorizontalOptions = LayoutOptions.Fill,
+
+                Content = content
+            };
+
+            QuestListLayout.Children.Add(quest.Card);
+        }
+
+        // QUESTIDE PROGRESS
+        private void UpdateQuests()
+        {
+            int completedCount = 0;
+
+            foreach (DragonQuest quest in quests)
+            {
+                int progress = 0;
+
+                switch (quest.Kind)
+                {
+                    case QuestKind.Crystals:
+                        progress = game.BerriesCollected;
+                        break;
+
+                    case QuestKind.Score:
+                        progress = game.Score;
+                        break;
+
+                    case QuestKind.Bonuses:
+                        progress = game.BonusesCollected;
+                        break;
+
+                    case QuestKind.Forest:
+                        progress = worldCrystals[0];
+                        break;
+
+                    case QuestKind.Night:
+                        progress = worldCrystals[1];
+                        break;
+
+                    case QuestKind.Candy:
+                        progress = worldCrystals[2];
+                        break;
+
+                    case QuestKind.Hard:
+                        progress = hardCrystals;
+                        break;
+
+                    case QuestKind.Fast:
+                        progress = fastCrystals;
+                        break;
+                }
+
+                progress = Math.Min(
+                    progress,
+                    quest.Target);
+
+                quest.ProgressLabel.Text =
+                    progress + " / " + quest.Target;
+
+                quest.ProgressBar.Progress =
+                    (double)progress / quest.Target;
+
+                if (progress >= quest.Target &&
+                    !quest.Completed)
+                {
+                    quest.Completed = true;
+
+                    quest.Card.BackgroundColor =
+                        Color.FromArgb("#183D30");
+
+                    quest.Card.Stroke =
+                        new SolidColorBrush(
+                            Color.FromArgb("#39AD74"));
+
+                    quest.StateLabel.Text =
+                        "✓ COMPLETED";
+
+                    quest.StateLabel.TextColor =
+                        Color.FromArgb("#8AF0B2");
+
+                    quest.ProgressBar.ProgressColor =
+                        Color.FromArgb("#4ADE80");
+                }
+
+                if (quest.Completed)
+                {
+                    completedCount++;
+                }
+            }
+
+            QuestCountLabel.Text =
+                completedCount + " / " + quests.Count;
+        }
+
+        // MÄNGU TAIMER
+        private void GameTimer_Tick(
+            object sender, EventArgs e)
         {
             if (!pageVisible ||
                 game.IsPaused ||
@@ -102,22 +572,49 @@ namespace Targe25Maiu
                 return;
             }
 
+            int previousCrystals =
+                game.BerriesCollected;
+
             int points = game.Update();
+
+            int collected =
+                game.BerriesCollected - previousCrystals;
+
+            if (collected > 0)
+            {
+                worldCrystals[(int)world] += collected;
+
+                if (difficulty == DragonDifficulty.Hard)
+                {
+                    hardCrystals += collected;
+                }
+
+                if (difficulty != DragonDifficulty.Easy)
+                {
+                    fastCrystals += collected;
+                }
+            }
 
             if (game.Score > bestScore)
             {
                 bestScore = game.Score;
 
                 Preferences.Default.Set(
-                    "DragonSnakeBestScore", bestScore);
+                    "DragonSnakeBestScore",
+                    bestScore);
             }
 
-            UpdateStats();
+            if (points > 0 || game.IsGameOver)
+            {
+                UpdateStats();
+                UpdateQuests();
+            }
+
             GameCanvas.Invalidate();
 
-            if (points > 0)
+            if (points > 0 && !game.IsGameOver)
             {
-                _ = ShowPointsPopup(points);
+                ShowPoints(points);
             }
 
             if (game.IsGameOver && !gameOverShown)
@@ -125,107 +622,80 @@ namespace Targe25Maiu
                 gameOverShown = true;
                 gameTimer.Stop();
 
+                PointsPopup.IsVisible = false;
+
                 StatusLabel.Text = game.IsWon
                     ? "🏆 Võitsid mängu!"
-                    : "💀 Draakoni seiklus lõppes!";
+                    : "💀 Mäng läbi!";
 
-                string message = game.IsWon
-                    ? $"Võitsid!\nPunktid: {game.Score}"
-                    : $"Mäng läbi!\n\n" +
-                      $"Punktid: {game.Score}\n" +
-                      $"Kristallid: {game.BerriesCollected}\n" +
-                      $"Rekord: {bestScore}";
+                GameOverScoreLabel.Text =
+                    "Punktid: " + game.Score +
+                    "\nKristallid: " + game.BerriesCollected +
+                    "\nRekord: " + bestScore;
 
-                await DisplayAlert(
-                    "Fantasy Dragon Adventure",
-                    message,
-                    "OK");
+                GameOverOverlay.IsVisible = true;
             }
         }
 
-        // Punktide animatsioon
-        private async Task ShowPointsPopup(int points)
-        {
-            int version = ++popupVersion;
-
-            PointsPopup.CancelAnimations();
-
-            PointsPopup.Text = $"+{points}";
-
-            PointsPopup.TextColor = points >= 200
-                ? Color.FromArgb("#FFD166")
-                : Color.FromArgb("#70E5FF");
-
-            PointsPopup.Opacity = 1;
-            PointsPopup.Scale = 0.8;
-            PointsPopup.TranslationY = 10;
-            PointsPopup.IsVisible = true;
-
-            try
-            {
-                await Task.WhenAll(
-                    PointsPopup.ScaleTo(1.3, 250),
-                    PointsPopup.TranslateTo(0, -35, 500),
-                    PointsPopup.FadeTo(0, 650)
-                );
-            }
-            finally
-            {
-                if (version == popupVersion)
-                {
-                    PointsPopup.IsVisible = false;
-                }
-            }
-        }
-
-        // Punktid ja boonused
+        // PUNKTIDE JA BOONUSE INFO
         private void UpdateStats()
         {
             ScoreLabel.Text = game.Score.ToString();
             BestLabel.Text = bestScore.ToString();
-
             BerriesLabel.Text =
                 game.BerriesCollected.ToString();
-
-            BonusLabel.Text =
-                $"{game.BonusProgress} / 5";
 
             BonusProgress.Progress =
                 game.BonusProgress / 5.0;
 
-            if (game.BonusBerries.Count > 0)
-            {
-                BonusInfoLabel.Text =
-                    $"🎁 Aardekirste väljakul: " +
-                    $"{game.BonusBerries.Count} (+200)";
-            }
-            else
-            {
-                BonusInfoLabel.Text =
-                    $"💎 Kogu veel " +
-                    $"{5 - game.BonusProgress} " +
-                    $"kristalli ja ava aarded!";
-            }
+            int remaining = 5 - game.BonusProgress;
+
+            BonusLabel.Text =
+                "🌟 Järgmine boonus";
+
+            BonusInfoLabel.Text =
+                "Veel " + remaining +
+                " kristalli ja saad 2 boonuskristalli!";
         }
 
-        // Uus mäng
+        // +100 / +200 TEADE
+        private async void ShowPoints(int points)
+        {
+            PointsPopup.CancelAnimations();
+
+            PointsPopup.Text = "+" + points;
+            PointsPopup.TextColor = Color.FromArgb(
+                points >= 200 ? "#FFD166" : "#70E5FF");
+
+            PointsPopup.Opacity = 1;
+            PointsPopup.Scale = 1;
+            PointsPopup.TranslationY = 0;
+            PointsPopup.IsVisible = true;
+
+            await PointsPopup.TranslateTo(0, -35, 250);
+            await PointsPopup.FadeTo(0, 250);
+
+            PointsPopup.IsVisible = false;
+        }
+
+        // UUS MÄNG
         private void NewGameButton_Clicked(
             object sender, EventArgs e)
         {
             gameTimer.Stop();
 
-            popupVersion++;
-            PointsPopup.CancelAnimations();
-            PointsPopup.IsVisible = false;
-
+            game.SetDifficulty(difficulty);
             game.Start();
+
             gameOverShown = false;
 
+            GameOverOverlay.IsVisible = false;
+            PointsPopup.IsVisible = false;
+
             PauseButton.Text = "⏸ Paus";
+            StatusLabel.Text = "🐉 Mäng käib!";
 
-            StatusLabel.Text =
-                "🐉 Uus maagiline seiklus algab!";
-
+            GenerateQuests();
             UpdateStats();
             GameCanvas.Invalidate();
 
@@ -235,7 +705,7 @@ namespace Targe25Maiu
             }
         }
 
-        // Paus ja jätkamine
+        // PAUS / JÄTKA
         private void PauseButton_Clicked(
             object sender, EventArgs e)
         {
@@ -247,7 +717,7 @@ namespace Targe25Maiu
                 game.Resume();
 
                 PauseButton.Text = "⏸ Paus";
-                StatusLabel.Text = "🐉 Seiklus jätkub!";
+                StatusLabel.Text = "🐉 Mäng käib!";
 
                 if (pageVisible)
                 {
@@ -262,11 +732,9 @@ namespace Targe25Maiu
                 PauseButton.Text = "▶ Jätka";
                 StatusLabel.Text = "⏸ Mäng on pausil";
             }
-
-            GameCanvas.Invalidate();
         }
 
-        // Draakoni juhtimine
+        // JUHTNUPUD
         private void UpButton_Clicked(
             object sender, EventArgs e)
         {
@@ -290,532 +758,363 @@ namespace Targe25Maiu
         {
             game.ChangeDirection(1, 0);
         }
+    }
 
-        // Teema valimine
-        private void ThemePicker_SelectedIndexChanged(
-            object sender, EventArgs e)
+    // QUESTIDE TÜÜBID
+    public enum QuestKind
+    {
+        Crystals,
+        Score,
+        Bonuses,
+        Forest,
+        Night,
+        Candy,
+        Hard,
+        Fast
+    }
+
+    // QUESTI ANDMED
+    public class DragonQuest
+    {
+        public string Icon { get; }
+        public string Title { get; }
+        public string Description { get; }
+        public QuestKind Kind { get; }
+        public int Target { get; }
+
+        public bool Completed { get; set; }
+
+        public Border Card { get; set; } = null!;
+        public Label TitleLabel { get; set; } = null!;
+        public Label StateLabel { get; set; } = null!;
+        public Label ProgressLabel { get; set; } = null!;
+        public ProgressBar ProgressBar { get; set; } = null!;
+
+        public DragonQuest(
+            string icon,
+            string title,
+            string description,
+            QuestKind kind,
+            int target)
         {
-            if (boardDrawable == null)
-                return;
-
-            currentTheme = ThemePicker.SelectedIndex switch
-            {
-                1 => SnakeTheme.Night(),
-                2 => SnakeTheme.Candy(),
-                _ => SnakeTheme.Grass()
-            };
-
-            ApplyTheme();
-        }
-
-        private void ApplyTheme()
-        {
-            // Säilitame fantaasiastiilis lehe tausta
-            BackgroundColor = Color.FromArgb("#171329");
-
-            boardDrawable.Theme = currentTheme;
-
-            BoardBorder.BackgroundColor =
-                Color.FromArgb("#261E3D");
-
-            BoardBorder.Stroke =
-                Color.FromArgb("#B28B4C");
-
-            GameCanvas.BackgroundColor =
-                Color.FromArgb("#243F3B");
-
-            ThemeTitleLabel.TextColor =
-                Color.FromArgb("#E9D5FF");
-
-            SpeedTitleLabel.TextColor =
-                Color.FromArgb("#E9D5FF");
-
-            StatusLabel.TextColor =
-                Color.FromArgb("#E9D5FF");
-
-            GameCanvas.Invalidate();
-        }
-
-        // Kiiruse valimine
-        private void SpeedPicker_SelectedIndexChanged(
-            object sender, EventArgs e)
-        {
-            if (gameTimer == null)
-                return;
-
-            bool wasRunning = gameTimer.IsRunning;
-
-            gameTimer.Stop();
-
-            gameTimer.Interval =
-                SpeedPicker.SelectedIndex switch
-                {
-                    0 => TimeSpan.FromMilliseconds(300),
-                    2 => TimeSpan.FromMilliseconds(110),
-                    _ => TimeSpan.FromMilliseconds(200)
-                };
-
-            if (wasRunning &&
-                !game.IsPaused &&
-                !game.IsGameOver)
-            {
-                gameTimer.Start();
-            }
+            Icon = icon;
+            Title = title;
+            Description = description;
+            Kind = kind;
+            Target = target;
         }
     }
 
-    // Fantaasiametsa ja draakoni joonistamine
-    public class SnakeBoardDrawable : IDrawable
+    // DRAAKONI MÄNGUVÄLJAK
+    public class DragonBoardDrawable : IDrawable
     {
         public SnakeGameLogic? Game { get; set; }
-        public SnakeTheme? Theme { get; set; }
 
-        public void Draw(ICanvas canvas, RectF rect)
-        {
-            if (Game == null || Theme == null)
-                return;
+        public DragonWorld World { get; set; } =
+            DragonWorld.Forest;
 
-            float cell = Math.Min(
-                rect.Width / Game.Width,
-                rect.Height / Game.Height);
-
-            if (cell <= 0)
-                return;
-
-            float ox =
-                (rect.Width - cell * Game.Width) / 2;
-
-            float oy =
-                (rect.Height - cell * Game.Height) / 2;
-
-            DrawForest(canvas, ox, oy, cell);
-
-            // Kristall
-            if (!Game.IsWon)
-            {
-                DrawCrystal(
-                    canvas,
-                    ox + Game.Food.X * cell,
-                    oy + Game.Food.Y * cell,
-                    cell);
-            }
-
-            // Aardekirstud
-            foreach (var bonus in Game.BonusBerries)
-            {
-                DrawTreasure(
-                    canvas,
-                    ox + bonus.X * cell,
-                    oy + bonus.Y * cell,
-                    cell);
-            }
-
-            // Draakoni keha ja pea
-            for (int i = Game.Snake.Body.Count - 1;
-                 i >= 0; i--)
-            {
-                var part = Game.Snake.Body[i];
-
-                float x = ox + part.X * cell;
-                float y = oy + part.Y * cell;
-
-                if (i == 0)
-                {
-                    DrawDragonHead(
-                        canvas,
-                        x,
-                        y,
-                        cell,
-                        Game.Snake.DirectionX,
-                        Game.Snake.DirectionY);
-                }
-                else
-                {
-                    DrawDragonBody(
-                        canvas, x, y, cell, i);
-                }
-            }
-        }
-
-        // Maagiline metsapõrand
-        private void DrawForest(
-            ICanvas canvas,
-            float ox,
-            float oy,
-            float cell)
+        public void Draw(ICanvas canvas, RectF dirtyRect)
         {
             if (Game == null)
                 return;
 
-            for (int y = 0; y < Game.Height; y++)
+            float cell = Math.Min(
+                dirtyRect.Width / Game.Width,
+                dirtyRect.Height / Game.Height);
+
+            float boardWidth = cell * Game.Width;
+            float boardHeight = cell * Game.Height;
+
+            float offsetX =
+                (dirtyRect.Width - boardWidth) / 2;
+
+            float offsetY =
+                (dirtyRect.Height - boardHeight) / 2;
+
+            DrawBackground(
+                canvas,
+                Game,
+                cell,
+                offsetX,
+                offsetY);
+
+            // KIVID
+            foreach (SnakePoint rock in Game.Rocks)
             {
-                for (int x = 0; x < Game.Width; x++)
+                float x = offsetX + rock.X * cell;
+                float y = offsetY + rock.Y * cell;
+
+                canvas.FillColor =
+                    Color.FromArgb("#77748A");
+
+                canvas.FillRoundedRectangle(
+                    x + 2,
+                    y + 2,
+                    cell - 4,
+                    cell - 4,
+                    5);
+
+                canvas.FillColor =
+                    Color.FromArgb("#B8B3C5");
+
+                canvas.FillCircle(
+                    x + cell * 0.36f,
+                    y + cell * 0.34f,
+                    cell * 0.11f);
+            }
+
+            // TAVALINE KRISTALL
+            if (Game.Food.X >= 0 &&
+                Game.Food.Y >= 0)
+            {
+                DrawCrystal(
+                    canvas,
+                    offsetX + Game.Food.X * cell,
+                    offsetY + Game.Food.Y * cell,
+                    cell,
+                    false);
+            }
+
+            // BOONUSKRISTALLID
+            foreach (SnakePoint bonus in Game.BonusBerries)
+            {
+                DrawCrystal(
+                    canvas,
+                    offsetX + bonus.X * cell,
+                    offsetY + bonus.Y * cell,
+                    cell,
+                    true);
+            }
+
+            // DRAAKONI KEHA
+            for (int i = Game.Snake.Body.Count - 1;
+                 i >= 1;
+                 i--)
+            {
+                SnakePoint part = Game.Snake.Body[i];
+
+                float x = offsetX + part.X * cell;
+                float y = offsetY + part.Y * cell;
+
+                DrawBody(canvas, x, y, cell, i);
+            }
+
+            // DRAAKONI PEA
+            if (Game.Snake.Body.Count > 0)
+            {
+                SnakePoint head = Game.Snake.Body[0];
+
+                DrawHead(
+                    canvas,
+                    offsetX + head.X * cell,
+                    offsetY + head.Y * cell,
+                    cell,
+                    Game.Snake.DirectionX,
+                    Game.Snake.DirectionY);
+            }
+        }
+
+        // MAAILMA TAUST
+        private void DrawBackground(
+            ICanvas canvas,
+            SnakeGameLogic game,
+            float cell,
+            float offsetX,
+            float offsetY)
+        {
+            Color first;
+            Color second;
+
+            switch (World)
+            {
+                case DragonWorld.Night:
+                    first = Color.FromArgb("#172538");
+                    second = Color.FromArgb("#203149");
+                    break;
+
+                case DragonWorld.Candy:
+                    first = Color.FromArgb("#594070");
+                    second = Color.FromArgb("#694B81");
+                    break;
+
+                default:
+                    first = Color.FromArgb("#243F3B");
+                    second = Color.FromArgb("#2B4942");
+                    break;
+            }
+
+            for (int y = 0; y < game.Height; y++)
+            {
+                for (int x = 0; x < game.Width; x++)
                 {
-                    float px = ox + x * cell;
-                    float py = oy + y * cell;
-
                     canvas.FillColor =
-                        Theme?.Name switch
-                        {
-                            "Night" => (x + y) % 2 == 0
-                                ? Color.FromArgb("#172538")
-                                : Color.FromArgb("#203149"),
-
-                            "Candy" => (x + y) % 2 == 0
-                                ? Color.FromArgb("#594070")
-                                : Color.FromArgb("#694B81"),
-
-                            _ => (x + y) % 2 == 0
-                                ? Color.FromArgb("#243F3B")
-                                : Color.FromArgb("#2B4942")
-                        };
+                        (x + y) % 2 == 0 ? first : second;
 
                     canvas.FillRectangle(
-                        px, py, cell, cell);
-
-                    // Maagilised sädemed
-                    if ((x * 7 + y * 11) % 19 == 0)
-                    {
-                        canvas.FillColor =
-                            Color.FromArgb("#7ADCC6");
-
-                        canvas.FillEllipse(
-                            px + cell * 0.45f,
-                            py + cell * 0.45f,
-                            cell * 0.1f,
-                            cell * 0.1f);
-                    }
-
-                    // Lilled
-                    if ((x * 13 + y * 5) % 31 == 0)
-                    {
-                        canvas.FillColor =
-                            Color.FromArgb("#9B79D9");
-
-                        canvas.FillEllipse(
-                            px + cell * 0.3f,
-                            py + cell * 0.3f,
-                            cell * 0.2f,
-                            cell * 0.2f);
-                    }
+                        offsetX + x * cell,
+                        offsetY + y * cell,
+                        cell,
+                        cell);
                 }
             }
         }
 
-        // Maagiline kristall
+        // KRISTALLI JOONISTAMINE
         private void DrawCrystal(
             ICanvas canvas,
             float x,
             float y,
-            float size)
+            float cell,
+            bool bonus)
         {
-            canvas.FillColor =
-                Color.FromArgb("#3BBED6");
+            float cx = x + cell / 2;
+            float cy = y + cell / 2;
 
-            var crystal = new PathF();
+            canvas.FillColor = bonus
+                ? Color.FromArgb("#FFD166")
+                : Color.FromArgb("#70E5FF");
 
-            crystal.MoveTo(
-                x + size * 0.5f,
-                y + size * 0.05f);
+            PathF crystal = new PathF();
 
-            crystal.LineTo(
-                x + size * 0.85f,
-                y + size * 0.4f);
-
-            crystal.LineTo(
-                x + size * 0.5f,
-                y + size * 0.95f);
-
-            crystal.LineTo(
-                x + size * 0.15f,
-                y + size * 0.4f);
-
+            crystal.MoveTo(cx, y + cell * 0.12f);
+            crystal.LineTo(x + cell * 0.82f, cy);
+            crystal.LineTo(cx, y + cell * 0.88f);
+            crystal.LineTo(x + cell * 0.18f, cy);
             crystal.Close();
+
             canvas.FillPath(crystal);
 
-            canvas.FillColor =
-                Color.FromArgb("#B6F5FF");
+            canvas.StrokeColor = bonus
+                ? Color.FromArgb("#FFF2AE")
+                : Color.FromArgb("#D6FAFF");
 
-            var shine = new PathF();
+            canvas.StrokeSize = 1.5f;
+            canvas.DrawPath(crystal);
 
-            shine.MoveTo(
-                x + size * 0.5f,
-                y + size * 0.1f);
+            canvas.FillColor = Colors.White;
 
-            shine.LineTo(
-                x + size * 0.5f,
-                y + size * 0.85f);
-
-            shine.LineTo(
-                x + size * 0.2f,
-                y + size * 0.4f);
-
-            shine.Close();
-            canvas.FillPath(shine);
+            canvas.FillCircle(
+                cx - cell * 0.09f,
+                cy - cell * 0.14f,
+                cell * 0.045f);
         }
 
-        // Kuldne aardekirst
-        private void DrawTreasure(
+        // DRAAKONI KEHA JOONISTAMINE
+        private void DrawBody(
             ICanvas canvas,
             float x,
             float y,
-            float size)
-        {
-            canvas.FillColor =
-                Color.FromArgb("#FACC15");
-
-            canvas.FillRoundedRectangle(
-                x + size * 0.1f,
-                y + size * 0.25f,
-                size * 0.8f,
-                size * 0.6f,
-                size * 0.12f);
-
-            canvas.FillColor =
-                Color.FromArgb("#8B4513");
-
-            canvas.FillRoundedRectangle(
-                x + size * 0.17f,
-                y + size * 0.35f,
-                size * 0.66f,
-                size * 0.42f,
-                size * 0.08f);
-
-            canvas.FillColor =
-                Color.FromArgb("#FFE88B");
-
-            canvas.FillRectangle(
-                x + size * 0.43f,
-                y + size * 0.4f,
-                size * 0.14f,
-                size * 0.28f);
-
-            canvas.FillColor =
-                Color.FromArgb("#FFF7C2");
-
-            canvas.FillEllipse(
-                x + size * 0.46f,
-                y + size * 0.48f,
-                size * 0.08f,
-                size * 0.08f);
-        }
-
-        // Draakoni keha
-        private void DrawDragonBody(
-            ICanvas canvas,
-            float x,
-            float y,
-            float size,
+            float cell,
             int index)
         {
-            // Seljaogad
-            if (index % 2 == 0)
-            {
-                canvas.FillColor =
-                    Color.FromArgb("#1B7D4D");
-
-                var spike = new PathF();
-
-                spike.MoveTo(
-                    x + size * 0.3f,
-                    y + size * 0.2f);
-
-                spike.LineTo(
-                    x + size * 0.5f,
-                    y);
-
-                spike.LineTo(
-                    x + size * 0.7f,
-                    y + size * 0.2f);
-
-                spike.Close();
-                canvas.FillPath(spike);
-            }
-
-            // Roheline keha
             canvas.FillColor =
-                Color.FromArgb("#43B96C");
+                index % 2 == 0
+                    ? Color.FromArgb("#43B96C")
+                    : Color.FromArgb("#35A65C");
 
-            canvas.FillEllipse(
-                x + size * 0.02f,
-                y + size * 0.02f,
-                size * 0.96f,
-                size * 0.96f);
+            canvas.FillRoundedRectangle(
+                x + 1,
+                y + 1,
+                cell - 2,
+                cell - 2,
+                cell * 0.30f);
 
-            // Kuldne kõht
             canvas.FillColor =
-                Color.FromArgb("#F6D47B");
+                Color.FromArgb("#7BE39B");
 
-            canvas.FillEllipse(
-                x + size * 0.28f,
-                y + size * 0.37f,
-                size * 0.44f,
-                size * 0.5f);
-
-            // Läige
-            canvas.FillColor =
-                Color.FromArgb("#A1F3B5");
-
-            canvas.FillEllipse(
-                x + size * 0.16f,
-                y + size * 0.12f,
-                size * 0.24f,
-                size * 0.16f);
+            canvas.FillCircle(
+                x + cell * 0.35f,
+                y + cell * 0.30f,
+                cell * 0.12f);
         }
 
-        // Draakoni pea
-        private void DrawDragonHead(
+        // DRAAKONI PEA JOONISTAMINE
+        private void DrawHead(
             ICanvas canvas,
             float x,
             float y,
-            float size,
-            int dx,
-            int dy)
+            float cell,
+            int directionX,
+            int directionY)
         {
-            canvas.SaveState();
+            float cx = x + cell / 2;
+            float cy = y + cell / 2;
 
-            canvas.Translate(
-                x + size / 2,
-                y + size / 2);
-
-            float angle = 0;
-
-            if (dx == 1)
-                angle = 90;
-            else if (dy == 1)
-                angle = 180;
-            else if (dx == -1)
-                angle = 270;
-
-            canvas.Rotate(angle);
-
-            canvas.Translate(
-                -size / 2,
-                -size / 2);
-
-            // Sarved
+            // Väikesed sarved
             canvas.FillColor =
-                Color.FromArgb("#F7D78A");
+                Color.FromArgb("#F6D48D");
 
-            var leftHorn = new PathF();
+            canvas.FillCircle(
+                x + cell * 0.24f,
+                y + cell * 0.20f,
+                cell * 0.13f);
 
-            leftHorn.MoveTo(
-                size * 0.15f,
-                size * 0.35f);
+            canvas.FillCircle(
+                x + cell * 0.76f,
+                y + cell * 0.20f,
+                cell * 0.13f);
 
-            leftHorn.LineTo(
-                size * 0.03f,
-                size * 0.02f);
-
-            leftHorn.LineTo(
-                size * 0.4f,
-                size * 0.2f);
-
-            leftHorn.Close();
-            canvas.FillPath(leftHorn);
-
-            var rightHorn = new PathF();
-
-            rightHorn.MoveTo(
-                size * 0.85f,
-                size * 0.35f);
-
-            rightHorn.LineTo(
-                size * 0.97f,
-                size * 0.02f);
-
-            rightHorn.LineTo(
-                size * 0.6f,
-                size * 0.2f);
-
-            rightHorn.Close();
-            canvas.FillPath(rightHorn);
-
-            // Roheline pea
+            // Pea
             canvas.FillColor =
-                Color.FromArgb("#70DD86");
-
-            canvas.FillEllipse(
-                -size * 0.05f,
-                size * 0.05f,
-                size * 1.1f,
-                size * 0.95f);
-
-            // Kuldne koon
-            canvas.FillColor =
-                Color.FromArgb("#F6D47B");
+                Color.FromArgb("#55CE76");
 
             canvas.FillRoundedRectangle(
-                size * 0.22f,
-                size * 0.58f,
-                size * 0.56f,
-                size * 0.32f,
-                size * 0.15f);
+                x + 1,
+                y + 1,
+                cell - 2,
+                cell - 2,
+                cell * 0.35f);
 
             // Silmad
             canvas.FillColor = Colors.White;
 
-            canvas.FillEllipse(
-                size * 0.15f,
-                size * 0.3f,
-                size * 0.27f,
-                size * 0.3f);
+            canvas.FillCircle(
+                x + cell * 0.32f,
+                y + cell * 0.38f,
+                cell * 0.16f);
 
-            canvas.FillEllipse(
-                size * 0.58f,
-                size * 0.3f,
-                size * 0.27f,
-                size * 0.3f);
+            canvas.FillCircle(
+                x + cell * 0.68f,
+                y + cell * 0.38f,
+                cell * 0.16f);
 
-            // Pupillid
             canvas.FillColor =
-                Color.FromArgb("#243447");
+                Color.FromArgb("#182A24");
 
-            canvas.FillEllipse(
-                size * 0.25f,
-                size * 0.38f,
-                size * 0.12f,
-                size * 0.15f);
+            canvas.FillCircle(
+                x + cell * 0.35f,
+                y + cell * 0.40f,
+                cell * 0.075f);
 
-            canvas.FillEllipse(
-                size * 0.63f,
-                size * 0.38f,
-                size * 0.12f,
-                size * 0.15f);
+            canvas.FillCircle(
+                x + cell * 0.71f,
+                y + cell * 0.40f,
+                cell * 0.075f);
+
+            // Nina
+            canvas.FillColor =
+                Color.FromArgb("#91EBA4");
+
+            canvas.FillRoundedRectangle(
+                x + cell * 0.28f,
+                y + cell * 0.62f,
+                cell * 0.44f,
+                cell * 0.22f,
+                cell * 0.10f);
 
             // Ninasõõrmed
             canvas.FillColor =
-                Color.FromArgb("#388B50");
+                Color.FromArgb("#2E8550");
 
-            canvas.FillEllipse(
-                size * 0.37f,
-                size * 0.69f,
-                size * 0.06f,
-                size * 0.05f);
+            canvas.FillCircle(
+                x + cell * 0.42f,
+                y + cell * 0.72f,
+                cell * 0.035f);
 
-            canvas.FillEllipse(
-                size * 0.57f,
-                size * 0.69f,
-                size * 0.06f,
-                size * 0.05f);
-
-            // Naeratus
-            canvas.StrokeColor =
-                Color.FromArgb("#357A46");
-
-            canvas.StrokeSize = size * 0.035f;
-
-            canvas.DrawArc(
-                size * 0.32f,
-                size * 0.65f,
-                size * 0.68f,
-                size * 0.86f,
-                0,
-                180,
-                false,
-                false);
-
-            canvas.RestoreState();
+            canvas.FillCircle(
+                x + cell * 0.60f,
+                y + cell * 0.72f,
+                cell * 0.035f);
         }
     }
 }
